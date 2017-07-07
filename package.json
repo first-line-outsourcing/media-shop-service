@@ -1,0 +1,22 @@
+{
+  "name": "pdf-generator",
+  "version": "0.0.1",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "start": "sls deploy"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-plugin-typescript": "^0.5.0"
+  },
+  "dependencies": {
+    "@types/mustache": "^0.8.29",
+    "@types/node": "^8.0.7",
+    "aws-sdk": "^2.80.0",
+    "memory-streams": "^0.1.2",
+    "mustache": "^2.3.0",
+    "wkhtmltopdf": "^0.3.4"
+  }
+}
