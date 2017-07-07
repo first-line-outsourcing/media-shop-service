@@ -15,7 +15,6 @@
     "@types/mustache": "^0.8.29",
     "@types/node": "^8.0.7",
     "aws-sdk": "^2.80.0",
-    "memory-streams": "^0.1.2",
     "mustache": "^2.3.0",
     "wkhtmltopdf": "^0.3.4"
   }
