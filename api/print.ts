@@ -9,7 +9,7 @@ wkhtmltopdf.command = './wkhtmltopdf';
 
 
 export async function receipt(event, context, callback) {
-  const data = JSON.parse(event.body);
+  const data = event.body;
   if (!data || !data.hasOwnProperty('id')) {
     return callback(data);
   }
@@ -27,15 +27,8 @@ export async function receipt(event, context, callback) {
     Metadata: { "x-amz-meta-requestId": context.awsRequestId }
   }, (err) => {
     unlinkSync(tmpFileLocation);
-    callback(err, {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      },
-      body: data.id,
-    });
+    callback(err, data.id);
   });
-
 }
 
 function getTemplate(templateName): Promise<any> {

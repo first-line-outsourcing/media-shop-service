@@ -1,37 +1,13 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
-service: bmt-media-shop-service
-
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
-# frameworkVersion: "=X.X.X"
+service: bmt-media-shop-service-promocode
 
 provider:
   name: aws
   runtime: nodejs6.10
-
-# you can overwrite defaults here
-#  stage: dev
   region: eu-central-1
   profile: serverless-profile
 
-# you can add statements to the Lambda function's IAM Role here
+
   iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
     - Effect: "Allow"
       Action:
         - "s3:GetObject"
@@ -48,22 +24,14 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
       Resource: "*"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-# you can define service wide environment variables here
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
     PROMOCODE_TABLE: ${self:service}-promocode
 
-# you can add packaging information here
 package:
   include:
     - wkhtmltopdf
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
 
 functions:
   print:
@@ -72,6 +40,7 @@ functions:
       - http:
           path: receipt
           method: post
+          integration: lambda
           cors:
             origins:
               - '*'
@@ -83,48 +52,37 @@ functions:
               - X-Amz-Security-Token
               - X-Amz-User-Agent
             allowCredentials: false
-    createPromocode:
-      handler: api/promocode.create
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+            statusCodes:
+              200:
+                pattern: ''
+  createPromocode:
+    handler: api/promocode.create
+    events:
       - http:
-        path: promocode
-        method: post
-        cors:
-          origins:
-            - '*'
-          headers:
-            - Content-Type
-            - X-Amz-Date
-            - Authorization
-            - X-Api-Key
-            - X-Amz-Security-Token
-            - X-Amz-User-Agent
-          allowCredentials: false
-#      - s3: ${env:BUCKET}
-#      - schedule: rate(10 minutes)
-#      - sns: greeter-topic
-#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
-#      - alexaSkill
-#      - iot:
-#          sql: "SELECT * FROM 'some_topic'"
-#      - cloudwatchEvent:
-#          event:
-#            source:
-#              - "aws.ec2"
-#            detail-type:
-#              - "EC2 Instance State-change Notification"
-#            detail:
-#              state:
-#                - pending
-#      - cloudwatchLog: '/aws/lambda/hello'
-#      - cognitoUserPool:
-#          pool: MyUserPool
-#          trigger: PreSignUp
+          path: promocode
+          method: post
+          integration: lambda
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+            statusCodes:
+              200:
+                pattern: ''
 
-#    Define function environment variables here
-#    environment:
-#      variable2: value2
-
-# you can add CloudFormation resource templates here
 resources:
   Resources:
     NewResource:
@@ -153,9 +111,6 @@ resources:
         StreamSpecification:
           StreamViewType: "NEW_AND_OLD_IMAGES"
         TableName: ${self:provider.environment.PROMOCODE_TABLE}
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+
 plugins:
   - serverless-plugin-typescript
