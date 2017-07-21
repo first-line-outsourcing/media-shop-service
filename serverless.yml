@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: bmt-media-shop-service
+service: bmt-media-shop-service-os
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -37,13 +37,19 @@ provider:
         - "s3:GetObject"
         - "s3:PutObject"
         - "s3:PutObjectAcl"
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:GetItem
+        - dynamodb:DeleteItem
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:ListStreams
+        - dynamodb:DescribeStream
       Resource:
-        Fn::Join:
-          - ""
-          - - "arn:aws:s3:::*"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-# you can define service wide environment variables here
+              - "Fn::Join": ["", ["arn:aws:dynamodb:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":table/reviews*"]]
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
@@ -68,6 +74,31 @@ functions:
       - http:
           path: receipt
           method: post
+  notification:
+    handler: api/notification.sendmail
+    events:
+      - http:
+          path: notification
+          method: get
+  addReview:
+    handler: api/reviews.add
+    events:
+      - http:
+          path: reviews/add
+          method: post
+  getReviews:
+      handler: api/reviews.getProductID
+      events:
+        - http:
+            path: reviews/{productID}
+            method: get
+  reviewsTrigger:
+      handler: api/reviews.reviewsTrigger
+      events:
+        - stream:
+            type: dynamodb
+            arn:
+              Fn::GetAtt: [ "ReviewsDynamoDBTable", "StreamArn" ]
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic
@@ -100,6 +131,24 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.PDF_BUCKET}
+    ReviewsDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: 'reviews'
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"
