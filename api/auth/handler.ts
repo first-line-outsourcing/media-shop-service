@@ -61,7 +61,7 @@ export const auth = (event, context, cb) => {
 export async function getAllItems(event, context, callback) {
     console.log('getAllItems', JSON.stringify(event));
     try {
-        const token = event.headers.Authorization.substring(7);
+        const token = event.headers.Authorization.substring(7).split('.')[0];
         const items = await db.getItems(token);
         return callback(null, createResponse(200, items));
     } catch (err) {
@@ -75,7 +75,7 @@ export async function getAllItems(event, context, callback) {
 export async function getProfile(event, context, callback) {
     console.log('getProfile', JSON.stringify(event));
     try {
-        const token = event.headers.Authorization.substring(7);
+        const token = event.headers.Authorization.substring(7).split('.')[0];
         const item = await db.getProfileByToken(token);
 
         return callback(null, createResponse(200, item));
@@ -90,7 +90,7 @@ export async function getProfile(event, context, callback) {
 export async function updateProfile(event, context, callback) {
     console.log('updateProfile', JSON.stringify(event.body));
     try {
-        const token = event.headers.Authorization.substring(7);
+        const token = event.headers.Authorization.substring(7).split('.')[0];
         await db.updateProfile(token, event.body.field, event.body.value);
 
         return callback(null, createResponse(200, null));
@@ -106,7 +106,7 @@ export async function createProfile(event, context, callback) {
     console.log('createProfile', JSON.stringify(event));
 
     try {
-        const token = event.headers.Authorization.substring(7);
+        const token = event.headers.Authorization.substring(7).split('.')[0];
         const item = await db.createProfile(token, event.body);
 
         return callback(null, createResponse(201, item));
