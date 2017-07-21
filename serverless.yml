@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: bmt-media-shop-service
+service: bmt-media-shop-service-auth
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -44,9 +44,22 @@ provider:
 #            - "Ref" : "ServerlessDeploymentBucket"
 #            - "/*"
 # you can define service wide environment variables here
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Scan
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:DeleteItem
+        - dynamodb:Query
+        - dynamodb:UpdateItem
+      Resource:
+        - "Fn::Join": ["", ["arn:aws:dynamodb:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":table/bmt-media-shop-service-users*"]]
+
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
+    DYNAMODB_TABLE: bmt-media-shop-service-users
 
 # you can add packaging information here
 package:
@@ -58,16 +71,16 @@ package:
 #    - exclude-me-dir/**
 
 functions:
-  print:
-    handler: api/print.receipt
+#  print:
+#    handler: api/print.receipt
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
-    events:
-      - http:
-          path: receipt
-          method: post
+#    events:
+#      - http:
+#          path: receipt
+#          method: post
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic
@@ -92,6 +105,56 @@ functions:
 #    Define function environment variables here
 #    environment:
 #      variable2: value2
+  auth:
+    handler: api/auth/handler.auth
+
+  getAllItems:
+    handler: api/auth/handler.getAllItems
+    events:
+      - http:
+          path: api/profile/getAll
+          method: get
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+
+  getProfile:
+    handler: api/auth/handler.getProfile
+    events:
+      - http:
+          path: api/profile/get
+          method: get
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+
+  updateProfile:
+    handler: api/auth/handler.updateProfile
+    events:
+      - http:
+          method: post
+          path: api/profile/update
+          cors: true
+          integration: lambda
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+
+  createProfile:
+    handler: api/auth/handler.createProfile
+    events:
+      - http:
+          method: post
+          path: api/profile/create
+          cors: true
+          integration: lambda
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
 
 # you can add CloudFormation resource templates here
 resources:
@@ -100,6 +163,24 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.PDF_BUCKET}
+    ItemsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: "bmt-media-shop-service-users"
+        AttributeDefinitions:
+        - AttributeName: "userToken"
+          AttributeType: "S"
+#            - AttributeName: "name"
+#              AttributeType: "S"
+        KeySchema:
+        - AttributeName: "userToken"
+          KeyType: "HASH"
+#            - AttributeName: "name"
+#              KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"
