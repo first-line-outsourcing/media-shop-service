@@ -11,7 +11,7 @@ wkhtmltopdf.command = './wkhtmltopdf';
 export async function receipt(event, context, callback) {
   const data = event.body;
   if (!data || !data.hasOwnProperty('id')) {
-    return callback(data);
+    return callback('[400] Body must have an id.');
   }
 
   let resp = await getTemplate('receipt.html');
@@ -27,7 +27,11 @@ export async function receipt(event, context, callback) {
     Metadata: { "x-amz-meta-requestId": context.awsRequestId }
   }, (err) => {
     unlinkSync(tmpFileLocation);
-    callback(err, data.id);
+    if (err) {
+      console.log(err);
+      return callback(err.statusCode ? `[${err.statusCode}] ${err.message}`: '[500] Internal Server Error');
+    }
+    callback(null, { id: data.id });
   });
 }
 

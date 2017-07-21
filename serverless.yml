@@ -19,11 +19,14 @@ provider:
           - - "arn:aws:s3:::*"
     - Effect: "Allow"
       Action:
+        - dynamodb:DescribeTable
         - dynamodb:Query
         - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
+        - dynamodb:DeleteItem
       Resource: "*"
+
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
@@ -41,47 +44,44 @@ functions:
           path: receipt
           method: post
           integration: lambda
-          cors:
-            origins:
-              - '*'
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-            allowCredentials: false
-          response:
-            headers:
-              Access-Control-Allow-Origin: "'*'"
-            statusCodes:
-              200:
-                pattern: ''
+          cors: true
   createPromocode:
     handler: api/promocode.create
     events:
       - http:
-          path: promocode
-          method: post
+          path: promocode/create
+          method: put
           integration: lambda
-          cors:
-            origins:
-              - '*'
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-            allowCredentials: false
+          cors: true
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
-            statusCodes:
-              200:
-                pattern: ''
+  checkPromocode:
+      handler: api/promocode.check
+      events:
+        - http:
+            path: promocode/check
+            method: put
+            integration: lambda
+            cors: true
+            response:
+              headers:
+                Access-Control-Allow-Origin: "'*'"
+  getPromocode:
+      handler: api/promocode.get
+      events:
+        - http:
+            path: promocode/{id}
+            method: get
+            integration: lambda
+            cors: true
+            request:
+              parameters:
+                paths:
+                  id: true
+            response:
+              headers:
+                Access-Control-Allow-Origin: "'*'"
 
 resources:
   Resources:
