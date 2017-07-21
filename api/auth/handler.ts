@@ -75,8 +75,9 @@ export async function getAllItems(event, context, callback) {
 export async function getProfile(event, context, callback) {
     console.log('getProfile', JSON.stringify(event));
     try {
-        const token = event.headers.Authorization.substring(7);
-        const item = await db.getProfileByToken(event.principalId);
+        const social = event.principalId.split('|')[0];
+        const id = event.principalId.split('|')[1];
+        const item = await db.getProfileByToken(id, social);
 
         return callback(null, createResponse(200, item));
     } catch (err) {
@@ -90,8 +91,9 @@ export async function getProfile(event, context, callback) {
 export async function updateProfile(event, context, callback) {
     console.log('updateProfile', JSON.stringify(event.body));
     try {
-        const token = event.headers.Authorization.substring(7);
-        await db.updateProfile(event.principalId, event.body.field, event.body.value);
+        const social = event.principalId.split('|')[0];
+        const id = event.principalId.split('|')[1];
+        await db.updateProfile(id, social, event.body.field, event.body.value);
 
         return callback(null, createResponse(200, null));
     } catch (err) {
@@ -106,8 +108,9 @@ export async function createProfile(event, context, callback) {
     console.log('createProfile', JSON.stringify(event));
 
     try {
-        const token = event.headers.Authorization.substring(7);
-        const item = await db.createProfile(event.principalId, event.body);
+        const social = event.principalId.split('|')[0];
+        const id = event.principalId.split('|')[1];
+        const item = await db.createProfile(id, social, event.body);
 
         return callback(null, createResponse(201, item));
     } catch (err) {

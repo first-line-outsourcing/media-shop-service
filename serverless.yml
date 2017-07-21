@@ -168,15 +168,15 @@ resources:
       Properties:
         TableName: "bmt-media-shop-service-users"
         AttributeDefinitions:
-        - AttributeName: "userToken"
-          AttributeType: "S"
-#            - AttributeName: "name"
-#              AttributeType: "S"
+          - AttributeName: "id"
+            AttributeType: "S"
+          - AttributeName: "social"
+            AttributeType: "S"
         KeySchema:
-        - AttributeName: "userToken"
-          KeyType: "HASH"
-#            - AttributeName: "name"
-#              KeyType: "RANGE"
+          - AttributeName: "id"
+            KeyType: "HASH"
+          - AttributeName: "social"
+            KeyType: "RANGE"
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5

@@ -18,13 +18,14 @@ const getItems = userToken =>
         });
     });
 
-const getProfileByToken = (token) =>
+const getProfileByToken = (id, social) =>
     new Promise((resolve, reject) => {
-        console.log('userToken', token);
+        console.log('id', id);
         const params = {
             TableName: 'bmt-media-shop-service-users',
             Key: {
-                userToken: token
+                id,
+                social
             },
         };
 
@@ -33,7 +34,7 @@ const getProfileByToken = (token) =>
             if (err) {
                 reject(err);
             } else if (!data.Item) {
-                const notFoundError = new Error(`An item could not be found with id: ${token}`);
+                const notFoundError = new Error(`An item could not be found with id: ${id}`);
 
                 notFoundError.message = '404';
 
@@ -45,13 +46,14 @@ const getProfileByToken = (token) =>
         });
     });
 
-const createProfile = (userToken, userData) =>
+const createProfile = (id, social, userData) =>
     new Promise((resolve, reject) => {
         const params = {
             TableName: 'bmt-media-shop-service-users',
-            ConditionExpression: 'attribute_not_exists(userToken)',
+            ConditionExpression: 'attribute_not_exists(id)',
             Item: {
-                userToken,
+                id,
+                social,
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 country: userData.country,
@@ -73,15 +75,16 @@ const createProfile = (userToken, userData) =>
         });
     });
 
-const updateProfile = (token, field, value) =>
+const updateProfile = (id, social, field, value) =>
     new Promise((resolve, reject) => {
         const params = {
             TableName: 'bmt-media-shop-service-users',
             ReturnValues: 'NONE',
-            ConditionExpression: 'attribute_exists(userToken)',
+            ConditionExpression: 'attribute_exists(id) AND attribute_exists(social)',
             UpdateExpression: `SET #field = :value`,
             Key: {
-                userToken: token
+                id,
+                social
             },
             ExpressionAttributeNames: {
                 '#field': field,
@@ -94,7 +97,7 @@ const updateProfile = (token, field, value) =>
         db.update(params, (err) => {
             if (err) {
                 if (err.code === 'ConditionalCheckFailedException') {
-                    const notFoundError = new Error(`An item could not be found with id: ${token}`);
+                    const notFoundError = new Error(`An item could not be found with id: ${id}`);
 
                     notFoundError.message = '404';
 
