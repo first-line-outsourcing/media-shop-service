@@ -111,21 +111,21 @@ const updateProfile = (id, social, field, value) =>
         });
     });
 
-const deleteProfile = (userId, itemId) =>
+const deleteProfile = (id, social) =>
     new Promise((resolve, reject) => {
         const params = {
-            TableName: 'items',
-            ConditionExpression: 'attribute_exists(id) AND attribute_exists(userId)',
+            TableName: 'bmt-media-shop-service-users',
+            ConditionExpression: 'attribute_exists(id) AND attribute_exists(social)',
             Key: {
-                id: itemId,
-                userId,
+                id,
+                social,
             },
         };
 
         db.delete(params, (err) => {
             if (err) {
                 if (err.code === 'ConditionalCheckFailedException') {
-                    const notFoundError = new Error(`An item could not be found with id: ${itemId}`);
+                    const notFoundError = new Error(`An item could not be found with id: ${id}`);
 
                     notFoundError.message = '404';
 
