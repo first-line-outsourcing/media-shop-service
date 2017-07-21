@@ -43,13 +43,11 @@ export const auth = (event, context, cb) => {
         const options = {
             audience: AUTH0_CLIENT_ID,
         };
-        console.log('token', token);
         const secretBuffer = new Buffer(AUTH0_CLIENT_SECRET, 'base64');
         jwt.verify(token, secretBuffer, options, (err, decoded) => {
             if (err) {
                 cb('Unauthorized');
             } else {
-                console.log('authorized');
                 cb(null, generatePolicy(decoded.sub, 'Allow', event.methodArn));
             }
         });

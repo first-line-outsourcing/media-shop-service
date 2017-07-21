@@ -39,7 +39,6 @@ const getProfileByToken = (id, social) =>
 
                 reject(notFoundError);
             } else {
-                delete data.Item['userToken'];
                 resolve(data.Item);
             }
         });

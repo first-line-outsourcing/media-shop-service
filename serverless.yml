@@ -59,7 +59,6 @@ provider:
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
-    DYNAMODB_TABLE: bmt-media-shop-service-users
 
 # you can add packaging information here
 package:
