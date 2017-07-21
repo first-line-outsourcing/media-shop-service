@@ -54,11 +54,12 @@ provider:
         - dynamodb:Query
         - dynamodb:UpdateItem
       Resource:
-        - "Fn::Join": ["", ["arn:aws:dynamodb:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":table/bmt-media-shop-service-users*"]]
+        - "*"
 
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
+    USERS_TABLE: ${self:service}-users
 
 # you can add packaging information here
 package:
@@ -118,6 +119,9 @@ functions:
           authorizer:
             name: auth
             resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
   getProfile:
     handler: api/auth/handler.getProfile
@@ -130,6 +134,9 @@ functions:
           authorizer:
             name: auth
             resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
   updateProfile:
     handler: api/auth/handler.updateProfile
@@ -142,6 +149,9 @@ functions:
           authorizer:
             name: auth
             resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
   createProfile:
     handler: api/auth/handler.createProfile
@@ -154,6 +164,12 @@ functions:
           authorizer:
             name: auth
             resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+            statusCodes:
+              201:
+                pattern: '' # Default response method
 
 # you can add CloudFormation resource templates here
 resources:
@@ -165,7 +181,7 @@ resources:
     ItemsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
-        TableName: "bmt-media-shop-service-users"
+        TableName: ${self:provider.environment.USERS_TABLE}
         AttributeDefinitions:
           - AttributeName: "id"
             AttributeType: "S"
@@ -177,8 +193,8 @@ resources:
           - AttributeName: "social"
             KeyType: "RANGE"
         ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 
 #  Outputs:
 #     NewOutput:

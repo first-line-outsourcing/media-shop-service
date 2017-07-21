@@ -24,16 +24,6 @@ const generatePolicy = (principalId, effect, resource) => {
     return authResponse;
 };
 
-const createResponse = (statusCode, body) => (
-    {
-        statusCode,
-        headers: {
-            'Access-Control-Allow-Origin': '*', // Required for CORS
-        },
-        body,
-    }
-);
-
 // Reusable Authorizer function, set on `authorizer` field in serverless.yml
 export const auth = (event, context, cb) => {
     if (event.authorizationToken) {
@@ -46,13 +36,13 @@ export const auth = (event, context, cb) => {
         const secretBuffer = new Buffer(AUTH0_CLIENT_SECRET, 'base64');
         jwt.verify(token, secretBuffer, options, (err, decoded) => {
             if (err) {
-                cb('Unauthorized');
+                cb('[401] Unauthorized');
             } else {
                 cb(null, generatePolicy(decoded.sub, 'Allow', event.methodArn));
             }
         });
     } else {
-        cb('Unauthorized');
+        cb('[401] Unauthorized');
     }
 };
 
@@ -60,12 +50,9 @@ export async function getAllItems(event, context, callback) {
     console.log('getAllItems', JSON.stringify(event));
     try {
         const items = await db.getItems();
-        return callback(null, createResponse(200, items));
+        return callback(null, items);
     } catch (err) {
-        return callback(
-            null,
-            createResponse(err.responseStatusCode || 500, { message: err.message || 'Internal server error' }),
-        );
+        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
     }
 }
 
@@ -75,13 +62,9 @@ export async function getProfile(event, context, callback) {
         const social = event.principalId.split('|')[0];
         const id = event.principalId.split('|')[1];
         const item = await db.getProfileByToken(id, social);
-
-        return callback(null, createResponse(200, item));
+        return callback(null, item);
     } catch (err) {
-        return callback(
-            null,
-            createResponse(err.responseStatusCode || 500, { message: err.message || 'Internal server error' }),
-        );
+        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
     }
 }
 
@@ -92,12 +75,9 @@ export async function updateProfile(event, context, callback) {
         const id = event.principalId.split('|')[1];
         await db.updateProfile(id, social, event.body.field, event.body.value);
 
-        return callback(null, createResponse(200, null));
+        return callback(null, null);
     } catch (err) {
-        return callback(
-            null,
-            createResponse(err.responseStatusCode || 500, { message: err.message || 'Internal server error' }),
-        );
+        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
     }
 }
 
@@ -109,11 +89,8 @@ export async function createProfile(event, context, callback) {
         const id = event.principalId.split('|')[1];
         const item = await db.createProfile(id, social, event.body);
 
-        return callback(null, createResponse(201, item));
+        return callback(null, item);
     } catch (err) {
-        return callback(
-            null,
-            createResponse(err.responseStatusCode || 500, { message: err.message || 'Internal server error' }),
-        );
+        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
     }
 }

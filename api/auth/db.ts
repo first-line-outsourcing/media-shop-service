@@ -5,7 +5,7 @@ const db = new AWS.DynamoDB.DocumentClient();
 const getItems = () =>
     new Promise((resolve, reject) => {
         const params = {
-            TableName: 'bmt-media-shop-service-users'
+            TableName: process.env.USERS_TABLE as string
         };
 
         db.scan(params, (err, data) => {
@@ -21,7 +21,7 @@ const getProfileByToken = (id, social) =>
     new Promise((resolve, reject) => {
         console.log('id', id);
         const params = {
-            TableName: 'bmt-media-shop-service-users',
+            TableName: process.env.USERS_TABLE as string,
             Key: {
                 id,
                 social
@@ -33,11 +33,7 @@ const getProfileByToken = (id, social) =>
             if (err) {
                 reject(err);
             } else if (!data.Item) {
-                const notFoundError = new Error(`An item could not be found with id: ${id}`);
-
-                notFoundError.message = '404';
-
-                reject(notFoundError);
+                reject(new Error(`[404] An item could not be found with id: ${id}`));
             } else {
                 resolve(data.Item);
             }
@@ -47,7 +43,7 @@ const getProfileByToken = (id, social) =>
 const createProfile = (id, social, userData) =>
     new Promise((resolve, reject) => {
         const params = {
-            TableName: 'bmt-media-shop-service-users',
+            TableName: process.env.USERS_TABLE as string,
             ConditionExpression: 'attribute_not_exists(id)',
             Item: {
                 id,
@@ -76,7 +72,7 @@ const createProfile = (id, social, userData) =>
 const updateProfile = (id, social, field, value) =>
     new Promise((resolve, reject) => {
         const params = {
-            TableName: 'bmt-media-shop-service-users',
+            TableName: process.env.USERS_TABLE as string,
             ReturnValues: 'NONE',
             ConditionExpression: 'attribute_exists(id) AND attribute_exists(social)',
             UpdateExpression: `SET #field = :value`,
@@ -95,11 +91,7 @@ const updateProfile = (id, social, field, value) =>
         db.update(params, (err) => {
             if (err) {
                 if (err.code === 'ConditionalCheckFailedException') {
-                    const notFoundError = new Error(`An item could not be found with id: ${id}`);
-
-                    notFoundError.message = '404';
-
-                    reject(notFoundError);
+                    reject(new Error(`[404] An item could not be found with id: ${id}`));
                 } else {
                     reject(err);
                 }
@@ -112,7 +104,7 @@ const updateProfile = (id, social, field, value) =>
 const deleteProfile = (id, social) =>
     new Promise((resolve, reject) => {
         const params = {
-            TableName: 'bmt-media-shop-service-users',
+            TableName: process.env.USERS_TABLE as string,
             ConditionExpression: 'attribute_exists(id) AND attribute_exists(social)',
             Key: {
                 id,
@@ -123,11 +115,7 @@ const deleteProfile = (id, social) =>
         db.delete(params, (err) => {
             if (err) {
                 if (err.code === 'ConditionalCheckFailedException') {
-                    const notFoundError = new Error(`An item could not be found with id: ${id}`);
-
-                    notFoundError.message = '404';
-
-                    reject(notFoundError);
+                    reject(new Error(`[404] An item could not be found with id: ${id}`));
                 } else {
                     reject(err);
                 }
