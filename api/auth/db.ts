@@ -2,7 +2,7 @@ import * as AWS from 'aws-sdk';
 
 const db = new AWS.DynamoDB.DocumentClient();
 
-const getItems = userToken =>
+const getItems = () =>
     new Promise((resolve, reject) => {
         const params = {
             TableName: 'bmt-media-shop-service-users'
@@ -12,7 +12,6 @@ const getItems = userToken =>
             if (err) {
                 reject(err);
             } else {
-                console.log('data', data);
                 resolve({items: data.Items});
             }
         });

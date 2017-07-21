@@ -61,7 +61,7 @@ export const auth = (event, context, cb) => {
 export async function getAllItems(event, context, callback) {
     console.log('getAllItems', JSON.stringify(event));
     try {
-        const items = await db.getItems(event.principalId);
+        const items = await db.getItems();
         return callback(null, createResponse(200, items));
     } catch (err) {
         return callback(
