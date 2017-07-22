@@ -24,6 +24,13 @@ const generatePolicy = (principalId, effect, resource) => {
     return authResponse;
 };
 
+const createResponse = (statusCode, body) => (
+    {
+        statusCode,
+        body,
+    }
+);
+
 // Reusable Authorizer function, set on `authorizer` field in serverless.yml
 export const auth = (event, context, cb) => {
     if (event.authorizationToken) {
@@ -50,7 +57,7 @@ export async function getAllItems(event, context, callback) {
     console.log('getAllItems', JSON.stringify(event));
     try {
         const items = await db.getItems();
-        return callback(null, items);
+        return callback(null, createResponse(200, items));
     } catch (err) {
         return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
     }
@@ -62,7 +69,7 @@ export async function getProfile(event, context, callback) {
         const social = event.principalId.split('|')[0];
         const id = event.principalId.split('|')[1];
         const item = await db.getProfileByToken(id, social);
-        return callback(null, item);
+        return callback(null, createResponse(200, item));
     } catch (err) {
         return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
     }
@@ -75,7 +82,7 @@ export async function updateProfile(event, context, callback) {
         const id = event.principalId.split('|')[1];
         await db.updateProfile(id, social, event.body.field, event.body.value);
 
-        return callback(null, null);
+        return callback(null, createResponse(200, null));
     } catch (err) {
         return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
     }
@@ -89,8 +96,12 @@ export async function createProfile(event, context, callback) {
         const id = event.principalId.split('|')[1];
         const item = await db.createProfile(id, social, event.body);
 
-        return callback(null, item);
+        return callback(null, createResponse(201, item));
     } catch (err) {
-        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+        if (err.statusCode === 400) {
+            return callback(null, createResponse(400, 'User already exist'))
+        } else {
+            return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+        }
     }
 }

@@ -167,9 +167,6 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
-            statusCodes:
-              201:
-                pattern: '' # Default response method
 
 # you can add CloudFormation resource templates here
 resources:
