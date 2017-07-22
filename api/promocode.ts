@@ -4,8 +4,8 @@ const dynamoDb = new DynamoDB.DocumentClient();
 
 export function create(event, context, callback) {
   const data = event.body;
-  if (!data || !data.hasOwnProperty('id')) {
-    return callback('[400] Body must have an id.');
+  if (!data || !data.hasOwnProperty('id') || !data.hasOwnProperty('social')) {
+    return callback('[400] Body must have an id and social.');
   }
 
   let persent;
@@ -38,6 +38,7 @@ export function create(event, context, callback) {
       TableName: process.env.PROMOCODE_TABLE as string,
       Item: {
         id: data.id,
+        social: data.social,
         promocode,
         persent
       }
@@ -52,14 +53,15 @@ export function create(event, context, callback) {
 
 export function check(event, context, callback) {
   const data = event.body;
-  if (!data || !data.hasOwnProperty('id') || !data.hasOwnProperty('promocode')) {
-    return callback('[400] Body must have an id and promocode.');
+  if (!data || !data.hasOwnProperty('id') || !data.hasOwnProperty('social') || !data.hasOwnProperty('promocode')) {
+    return callback('[400] Body must have an id, social and promocode.');
   }
 
   dynamoDb.get({
     TableName: process.env.PROMOCODE_TABLE as string,
     Key: {
-      id: data.id
+      id: data.id,
+      social: data.social
     }
   }, (err, item) => {
     console.log('Promocode', item);
@@ -72,7 +74,8 @@ export function check(event, context, callback) {
         dynamoDb.delete({
           TableName: process.env.PROMOCODE_TABLE as string,
           Key: {
-            id: data.id
+            id: data.id,
+            social: data.social
           }
         }, (err) => {
           if (err) {
@@ -92,14 +95,17 @@ export function check(event, context, callback) {
 
 export function get(event, context, callback) {
   const data = event.path;
-  if (!data || !data.hasOwnProperty('id')) {
-    return callback('[400] Body must have an id.');
+  if (!data || !data.hasOwnProperty('id') || !data.hasOwnProperty('social')) {
+    return callback('[400] Path must have an id and social.');
   }
 
+  console.log('id:', data.id);
+  console.log('social:', data.social);
   dynamoDb.get({
     TableName: process.env.PROMOCODE_TABLE as string,
     Key: {
-      id: data.id
+      id: data.id,
+      social: data.social
     }
   }, (err, item) => {
     console.log('Promocode', item);
