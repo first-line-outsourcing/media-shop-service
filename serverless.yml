@@ -37,6 +37,8 @@ package:
     - wkhtmltopdf
 
 functions:
+  auth:
+    handler: api/auth.auth
   print:
     handler: api/print.receipt
     events:
@@ -56,6 +58,9 @@ functions:
           method: put
           integration: lambda
           cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
@@ -67,6 +72,9 @@ functions:
             method: put
             integration: lambda
             cors: true
+            authorizer:
+              name: auth
+              resultTtlInSeconds: 0
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
@@ -74,15 +82,13 @@ functions:
       handler: api/promocode.get
       events:
         - http:
-            path: promocode/{social}/{id}
+            path: promocode/get
             method: get
             integration: lambda
             cors: true
-            request:
-              parameters:
-                paths:
-                  id: true
-                  social: true
+            authorizer:
+              name: auth
+              resultTtlInSeconds: 0
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"

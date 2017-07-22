@@ -4,8 +4,11 @@ const dynamoDb = new DynamoDB.DocumentClient();
 
 export function create(event, context, callback) {
   const data = event.body;
-  if (!data || !data.hasOwnProperty('id') || !data.hasOwnProperty('social')) {
-    return callback('[400] Body must have an id and social.');
+
+  const social = event.principalId.split('|')[0];
+  const id = event.principalId.split('|')[1];
+  if (!social || !id) {
+    return callback('[401] Unauthorized');
   }
 
   let persent;
@@ -37,8 +40,8 @@ export function create(event, context, callback) {
   dynamoDb.put({
       TableName: process.env.PROMOCODE_TABLE as string,
       Item: {
-        id: data.id,
-        social: data.social,
+        id: id,
+        social: social,
         promocode,
         persent
       }
@@ -53,15 +56,21 @@ export function create(event, context, callback) {
 
 export function check(event, context, callback) {
   const data = event.body;
-  if (!data || !data.hasOwnProperty('id') || !data.hasOwnProperty('social') || !data.hasOwnProperty('promocode')) {
-    return callback('[400] Body must have an id, social and promocode.');
+
+  const social = event.principalId.split('|')[0];
+  const id = event.principalId.split('|')[1];
+  if (!social || !id) {
+    return callback('[401] Unauthorized');
+  }
+  if (!data.hasOwnProperty('promocode')) {
+    return callback('[400] Body must have a promocode.');
   }
 
   dynamoDb.get({
     TableName: process.env.PROMOCODE_TABLE as string,
     Key: {
-      id: data.id,
-      social: data.social
+      id: id,
+      social: social
     }
   }, (err, item) => {
     console.log('Promocode', item);
@@ -74,8 +83,8 @@ export function check(event, context, callback) {
         dynamoDb.delete({
           TableName: process.env.PROMOCODE_TABLE as string,
           Key: {
-            id: data.id,
-            social: data.social
+            id: id,
+            social: social
           }
         }, (err) => {
           if (err) {
@@ -94,18 +103,19 @@ export function check(event, context, callback) {
 }
 
 export function get(event, context, callback) {
-  const data = event.path;
-  if (!data || !data.hasOwnProperty('id') || !data.hasOwnProperty('social')) {
-    return callback('[400] Path must have an id and social.');
+  const social = event.principalId.split('|')[0];
+  const id = event.principalId.split('|')[1];
+  if (!social || !id) {
+    return callback('[401] Unauthorized');
   }
 
-  console.log('id:', data.id);
-  console.log('social:', data.social);
+  console.log('id:', id);
+  console.log('social:', social);
   dynamoDb.get({
     TableName: process.env.PROMOCODE_TABLE as string,
     Key: {
-      id: data.id,
-      social: data.social
+      id: id,
+      social: social
     }
   }, (err, item) => {
     console.log('Promocode', item);
