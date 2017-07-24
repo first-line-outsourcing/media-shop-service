@@ -25,12 +25,14 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:DeleteItem
+        - dynamodb:UpdateItem
       Resource: "*"
 
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
     PROMOCODE_TABLE: ${self:service}-promocode
+    USERS_TABLE: ${self:service}-users
 
 package:
   include:
@@ -38,7 +40,8 @@ package:
 
 functions:
   auth:
-    handler: api/auth.auth
+    handler: api/auth/handler.auth
+
   print:
     handler: api/print.receipt
     events:
@@ -50,6 +53,7 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+
   createPromocode:
     handler: api/promocode/handler.create
     events:
@@ -64,6 +68,7 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+
   checkPromocode:
       handler: api/promocode/handler.check
       events:
@@ -78,6 +83,7 @@ functions:
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
+
   getPromocode:
       handler: api/promocode/handler.get
       events:
@@ -92,6 +98,66 @@ functions:
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
+
+  getAllItems:
+    handler: api/auth/handler.getAllItems
+    events:
+      - http:
+          path: api/profile/getAll
+          method: get
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  getProfile:
+    handler: api/auth/handler.getProfile
+    events:
+      - http:
+          path: api/profile/get
+          method: get
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  updateProfile:
+    handler: api/auth/handler.updateProfile
+    events:
+      - http:
+          method: post
+          path: api/profile/update
+          cors: true
+          integration: lambda
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  createProfile:
+    handler: api/auth/handler.createProfile
+    events:
+      - http:
+          method: post
+          path: api/profile/create
+          cors: true
+          integration: lambda
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
 resources:
   Resources:
@@ -126,5 +192,22 @@ resources:
           StreamViewType: "NEW_AND_OLD_IMAGES"
         TableName: ${self:provider.environment.PROMOCODE_TABLE}
 
+    ItemsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.USERS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+          - AttributeName: "social"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+          - AttributeName: "social"
+            KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 plugins:
   - serverless-plugin-typescript
