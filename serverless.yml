@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: bmt-media-shop-service
+service: bmt-media-shop-service-admin
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -44,9 +44,22 @@ provider:
 #            - "Ref" : "ServerlessDeploymentBucket"
 #            - "/*"
 # you can define service wide environment variables here
+#    - Effect: Allow
+#      Action:
+#        - dynamodb:DescribeTable
+#        - dynamodb:Scan
+#        - dynamodb:PutItem
+#        - dynamodb:GetItem
+#        - dynamodb:DeleteItem
+#        - dynamodb:Query
+#        - dynamodb:UpdateItem
+#      Resource:
+#        - "*"
+
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
+    SELLING_TABLE: ${self:service}-selling
 
 # you can add packaging information here
 package:
@@ -92,6 +105,22 @@ functions:
 #    Define function environment variables here
 #    environment:
 #      variable2: value2
+  getSelling:
+    handler: api/admin.getSelling
+
+    events:
+      - http:
+          path: api/admin/getSelling
+          method: get
+          integration: lambda
+          cors: true
+#          authorizer:
+#            name: auth
+#            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
 
 # you can add CloudFormation resource templates here
 resources:
