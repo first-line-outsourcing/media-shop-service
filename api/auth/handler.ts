@@ -66,8 +66,7 @@ export async function getAllItems(event, context, callback) {
 export async function getProfile(event, context, callback) {
     console.log('getProfile', JSON.stringify(event));
     try {
-        const social = event.principalId.split('|')[0];
-        const id = event.principalId.split('|')[1];
+        const [social, id] = event.principalId.split('|');
         const item = await db.getProfileByToken(id, social);
         return callback(null, item);
     } catch (err) {
@@ -78,8 +77,7 @@ export async function getProfile(event, context, callback) {
 export async function updateProfile(event, context, callback) {
     console.log('updateProfile', JSON.stringify(event.body));
     try {
-        const social = event.principalId.split('|')[0];
-        const id = event.principalId.split('|')[1];
+        const [social, id] = event.principalId.split('|');
         await db.updateProfile(id, social, event.body.field, event.body.value);
 
         return callback(null, null);
@@ -92,8 +90,7 @@ export async function createProfile(event, context, callback) {
     console.log('createProfile', JSON.stringify(event));
 
     try {
-        const social = event.principalId.split('|')[0];
-        const id = event.principalId.split('|')[1];
+        const [social, id] = event.principalId.split('|');
         const item = await db.createProfile(id, social, event.body);
 
         return callback(null, createResponse(201, item));
