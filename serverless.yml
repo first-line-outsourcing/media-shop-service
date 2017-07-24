@@ -51,7 +51,7 @@ functions:
             headers:
               Access-Control-Allow-Origin: "'*'"
   createPromocode:
-    handler: api/promocode.create
+    handler: api/promocode/handler.create
     events:
       - http:
           path: promocode/create
@@ -65,7 +65,7 @@ functions:
             headers:
               Access-Control-Allow-Origin: "'*'"
   checkPromocode:
-      handler: api/promocode.check
+      handler: api/promocode/handler.check
       events:
         - http:
             path: promocode/check
@@ -79,7 +79,7 @@ functions:
               headers:
                 Access-Control-Allow-Origin: "'*'"
   getPromocode:
-      handler: api/promocode.get
+      handler: api/promocode/handler.get
       events:
         - http:
             path: promocode/get
