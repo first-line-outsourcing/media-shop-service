@@ -38,8 +38,10 @@ export function create(event, context, callback) {
 
   promocode.create(id, social, persent)
     .then((data) => callback(null, { persent }))
-    .catch((err) =>
-      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error'));
+    .catch((err) => {
+      console.log(err);
+      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+    });
 }
 
 export function check(event, context, callback) {
@@ -60,8 +62,10 @@ export function check(event, context, callback) {
 
   promocode.check(id, social, data.promocode)
     .then((data) => callback(null, { persent: data[0] }))
-    .catch((err) =>
-      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error'));
+    .catch((err) => {
+      console.log(err);
+      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error')
+    });
 }
 
 export function get(event, context, callback) {
