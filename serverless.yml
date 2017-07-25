@@ -44,22 +44,22 @@ provider:
 #            - "Ref" : "ServerlessDeploymentBucket"
 #            - "/*"
 # you can define service wide environment variables here
-#    - Effect: Allow
-#      Action:
-#        - dynamodb:DescribeTable
-#        - dynamodb:Scan
-#        - dynamodb:PutItem
-#        - dynamodb:GetItem
-#        - dynamodb:DeleteItem
-#        - dynamodb:Query
-#        - dynamodb:UpdateItem
-#      Resource:
-#        - "*"
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Scan
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:DeleteItem
+        - dynamodb:Query
+        - dynamodb:UpdateItem
+      Resource:
+        - "*"
 
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
-    SELLING_TABLE: ${self:service}-selling
+    USERS_TABLE: ${self:service}-users
 
 # you can add packaging information here
 package:
@@ -121,6 +121,68 @@ functions:
             headers:
               Access-Control-Allow-Origin: "'*'"
 
+  auth:
+    handler: api/auth/handler.auth
+
+  getAllItems:
+    handler: api/auth/handler.getAllItems
+    events:
+      - http:
+          path: api/profile/getAll
+          method: get
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  getProfile:
+    handler: api/auth/handler.getProfile
+    events:
+      - http:
+          path: api/profile/get
+          method: get
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  updateProfile:
+    handler: api/auth/handler.updateProfile
+    events:
+      - http:
+          method: post
+          path: api/profile/update
+          cors: true
+          integration: lambda
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  createProfile:
+    handler: api/auth/handler.createProfile
+    events:
+      - http:
+          method: post
+          path: api/profile/create
+          cors: true
+          integration: lambda
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
 # you can add CloudFormation resource templates here
 resources:
@@ -129,6 +191,24 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.PDF_BUCKET}
+    ItemsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.USERS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+          - AttributeName: "social"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+          - AttributeName: "social"
+            KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"

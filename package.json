@@ -17,6 +17,7 @@
     "aws-sdk": "^2.80.0",
     "faker": "^4.1.0",
     "mustache": "^2.3.0",
-    "wkhtmltopdf": "^0.3.4"
+    "wkhtmltopdf": "^0.3.4",
+    "jsonwebtoken": "^7.3.0"
   }
 }
