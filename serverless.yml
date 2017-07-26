@@ -173,6 +173,19 @@ functions:
             headers:
               Access-Control-Allow-Origin: "'*'"
 
+  getSelling:
+      handler: api/admin.getSelling
+
+      events:
+        - http:
+            path: api/admin/getSelling
+            method: get
+            integration: lambda
+            cors: true
+            response:
+              headers:
+                Access-Control-Allow-Origin: "'*'"
+
 resources:
   Resources:
     NewResource:
