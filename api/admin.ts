@@ -11,7 +11,7 @@ export async function getSelling (event, context, callback) {
   const to = event.query.to ? `${event.query.to}-11-31` : '2017-12-31';
 
   let selling: any[] = [];
-  let profiles;
+  let profiles: any;
 
   try {
     profiles = await db.getItems();
@@ -19,7 +19,7 @@ export async function getSelling (event, context, callback) {
     return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
   }
 
-  console.log('user orders =', JSON.stringify(profiles));
+  console.log('profiles =', JSON.stringify(profiles));
 
   profiles['items'].forEach((profile) => {
     profile.orders.forEach((order) => {
@@ -76,7 +76,7 @@ function getAddress () {
 }
 
 function getOrders () {
-  let orders: Array<any> = [];
+  let orders: any[] = [];
   let lastIndex = 2 + getRandom(10);
 
   for (let i = 0; i < lastIndex; i++) {
