@@ -1,4 +1,4 @@
-service: bmt-media-shop-service
+service: bmt-media-shop-service-promocode
 
 provider:
   name: aws
@@ -19,6 +19,10 @@ provider:
           - - "arn:aws:s3:::*"
     - Effect: "Allow"
       Action:
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:DescribeStream
+        - dynamodb:ListStreams
         - dynamodb:DescribeTable
         - dynamodb:Query
         - dynamodb:Scan
@@ -70,34 +74,44 @@ functions:
               Access-Control-Allow-Origin: "'*'"
 
   checkPromocode:
-      handler: api/promocode/handler.check
-      events:
-        - http:
-            path: promocode/check
-            method: put
-            integration: lambda
-            cors: true
-            authorizer:
-              name: auth
-              resultTtlInSeconds: 0
-            response:
-              headers:
-                Access-Control-Allow-Origin: "'*'"
+    handler: api/promocode/handler.check
+    events:
+      - http:
+          path: promocode/check
+          method: put
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
   getPromocode:
-      handler: api/promocode/handler.get
-      events:
-        - http:
-            path: promocode/get
-            method: get
-            integration: lambda
-            cors: true
-            authorizer:
-              name: auth
-              resultTtlInSeconds: 0
-            response:
-              headers:
-                Access-Control-Allow-Origin: "'*'"
+    handler: api/promocode/handler.get
+    events:
+      - http:
+          path: promocode/get
+          method: get
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  removePromocode:
+    handler: api/promocode/handler.remove
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - ItemsTable
+              - StreamArn
 
   getAllItems:
     handler: api/auth/handler.getAllItems
@@ -209,5 +223,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: "NEW_AND_OLD_IMAGES"
 plugins:
   - serverless-plugin-typescript
