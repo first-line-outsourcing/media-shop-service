@@ -105,21 +105,6 @@ functions:
 #    Define function environment variables here
 #    environment:
 #      variable2: value2
-  getSelling:
-    handler: api/admin.getSelling
-
-    events:
-      - http:
-          path: api/admin/getSelling
-          method: get
-          integration: lambda
-          cors: true
-#          authorizer:
-#            name: auth
-#            resultTtlInSeconds: 0
-          response:
-            headers:
-              Access-Control-Allow-Origin: "'*'"
 
   auth:
     handler: api/auth/handler.auth
@@ -183,6 +168,19 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+
+  getSelling:
+      handler: api/admin.getSelling
+
+      events:
+        - http:
+            path: api/admin/getSelling
+            method: get
+            integration: lambda
+            cors: true
+            response:
+              headers:
+                Access-Control-Allow-Origin: "'*'"
 
 # you can add CloudFormation resource templates here
 resources:

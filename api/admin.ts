@@ -1,13 +1,34 @@
 const faker = require('faker');
 
-export function getSelling (event, context, callback) {
-  console.log('event = ', event);
-  console.log('event = ', context);
+import db from './auth/db';
 
-  let from = event.query.from ? `${event.query.from}-01-01` : '2014-01-01';
-  let to = event.query.to ? `${event.query.to}-11-31` : '2016-11-31';
+export async function getSelling (event, context, callback) {
+
+  console.log('event = ', event);
+  console.log('context = ', context);
+
+  const from = event.query.from ? `${event.query.from}-01-01` : '2014-01-01';
+  const to = event.query.to ? `${event.query.to}-11-31` : '2017-12-31';
 
   let selling: Array<any> = [];
+  let profiles;
+
+  try {
+    profiles = await db.getItems();
+  } catch (err) {
+    return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+  }
+
+  console.log('user orders =', JSON.stringify(profiles));
+
+  profiles['items'].forEach((profile) => {
+    profile.orders.forEach((order) => {
+      order['formProfile'].firstName = profile.firstName ? profile.firstName : '';
+      order['formProfile'].lastName = profile.lastName ? profile.lastName : '';
+      selling.push(order);
+    })
+  });
+
   let lastIndex = getRandom(500);
 
   for (let i = 0; i < lastIndex; i++) {
@@ -25,6 +46,7 @@ export function getSelling (event, context, callback) {
       date: new Date(faker.date.between(from, to))
     });
   }
+
   console.log('selling = ', selling);
   callback(null,selling);
 }
