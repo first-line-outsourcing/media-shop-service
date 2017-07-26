@@ -9,7 +9,7 @@ export class Promocode {
   }
 
   public create(id: string, social: string, persent: number) {
-    const promocode = this.generatePromocode(5);
+    const promocode = Promocode.generatePromocode(5);
 
     const params = {
       TableName: process.env.PROMOCODE_TABLE as string,
@@ -67,7 +67,7 @@ export class Promocode {
     return this.db.delete(params).promise();
   }
 
-  private generatePromocode(length: number): string {
+  public static generatePromocode(length: number): string {
     const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let code = 'BESTMOOD-';
     for (let i = 0; i < length; i++ ) {

@@ -1,6 +1,7 @@
 const faker = require('faker');
 
 import db from './auth/db';
+import { Promocode } from './promocode/promocode';
 
 export async function getSelling (event, context, callback) {
 
@@ -9,7 +10,7 @@ export async function getSelling (event, context, callback) {
   const from = event.query.from ? `${event.query.from}-01-01` : '2014-01-01';
   const to = event.query.to ? `${event.query.to}-11-31` : '2017-12-31';
 
-  let selling: Array<any> = [];
+  let selling: any[] = [];
   let profiles;
 
   try {
@@ -35,9 +36,9 @@ export async function getSelling (event, context, callback) {
       orders: getOrders(),
       total: getRandom(1000),
       formProfile: {
-        promoCode: faker.lorem.word(),
+        promoCode: Promocode.generatePromocode(5),
         address: getAddress(),
-        payment: getKeyPayment(getRandom(5)),
+        payment: getKeyPayment(),
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName()
       },
@@ -53,14 +54,14 @@ function getRandom (max) {
   return Math.floor(Math.random() * (max + 1));
 }
 
-function getKeyType (key) {
+function getKeyType () {
   let type = ['music', 'game', 'movie'];
-  return type[key];
+  return type[getRandom(type.length)];
 }
 
-function getKeyPayment (key) {
+function getKeyPayment () {
   let payment = ['PayPal', 'CreditCard', 'Cash', 'WebMoney', 'QIWI', 'Bitcoin'];
-  return payment[key];
+  return payment[getRandom(payment.length)];
 }
 
 function getAddress () {
@@ -81,7 +82,7 @@ function getOrders () {
   for (let i = 0; i < lastIndex; i++) {
     orders.push({
       id: faker.random.number(),
-      type: getKeyType(getRandom(3)),
+      type: getKeyType(),
       name: faker.lorem.words(),
       cover: faker.image.imageUrl(),
       description: faker.lorem.paragraph(),

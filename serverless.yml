@@ -1,4 +1,4 @@
-service: bmt-media-shop-service-admin
+service: bmt-media-shop-service
 
 provider:
   name: aws
