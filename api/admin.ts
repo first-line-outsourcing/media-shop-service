@@ -5,7 +5,6 @@ import db from './auth/db';
 export async function getSelling (event, context, callback) {
 
   console.log('event = ', event);
-  console.log('context = ', context);
 
   const from = event.query.from ? `${event.query.from}-01-01` : '2014-01-01';
   const to = event.query.to ? `${event.query.to}-11-31` : '2017-12-31';
@@ -47,7 +46,6 @@ export async function getSelling (event, context, callback) {
     });
   }
 
-  console.log('selling = ', selling);
   callback(null,selling);
 }
 
