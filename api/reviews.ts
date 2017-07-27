@@ -1,27 +1,29 @@
 const AWS = require('aws-sdk');
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const uuid = require('uuid');
 
 export function add(event, context, callback) {
+    const data = event.body;
     const params = {
-        TableName: 'reviews',
+        TableName: process.env.TABLE_REVIEWS,
         Item: {
-            id: Math.floor(Math.random() * 1000 + 1).toString(),
-            userID: 'user id',
-            productID: 'product id',
-            productType: 'product type',
-            text: 'review text'
+            id: uuid.v1(),
+            username: data.username,
+            rate: data.rate,
+            createDate: data.createDate,
+            productID: data.productID,
+            text: data.text
         }
     };
     dynamoDB.put(params, (error, result) => {
         if (error) {
-            console.error(error);
-            callback(new Error('Could`t adding review'));
-            return;
+            console.log(error);
+            return callback(error.statusCode ? `[${error.statusCode}] ${error.message}`: '[500] Internal Server Error');
         }
 
         const response = {
             statusCode: 200,
-            body: JSON.stringify(result.Items)
+            body: "Succes"
         };
         callback(null, response);
     })
@@ -30,28 +32,24 @@ export function add(event, context, callback) {
 
 export function getProductID(event, context, callback) {
     const params = {
-        TableName: 'reviews',
+        TableName: process.env.TABLE_REVIEWS,
         FilterExpression: "#productID = :pID",
         ExpressionAttributeNames: {
             "#productID": "productID",
         },
         ExpressionAttributeValues: {
-            ":pID": event.pathParameters.productID
+            ":pID": event.path.productID
         }
-
     };
 
     dynamoDB.scan(params, (error, result) => {
         if (error) {
-            console.log(params);
             console.error(error);
-            callback(new Error('Could`t fetch reviews with product id '+event.pathParameters.productID));
-            return;
+            return callback(error.statusCode ? `[${error.statusCode}] ${error.message}`: '[500] Internal Server Error');
         }
-
         const response = {
             statusCode: 200,
-            body: JSON.stringify(result.Items)
+            data: result.Items
         };
         callback(null, response);
     })
