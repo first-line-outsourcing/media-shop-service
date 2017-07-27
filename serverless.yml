@@ -161,9 +161,18 @@ functions:
             headers:
               Access-Control-Allow-Origin: "'*'"
 
+#  prodfileTrigger:
+#        handler: api/triggers/handler.updateProfile
+#        events:
+#          - stream:
+#              type: dynamodb
+#              arn:
+#                Fn::GetAtt:
+#                  - ReviewsDynamoDBTable
+#                  - StreamArn
+
   getSelling:
       handler: api/admin.getSelling
-
       events:
         - http:
             path: api/admin/getSelling
@@ -173,6 +182,7 @@ functions:
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
+
   notification:
       handler: api/notification.sendmail
       events:
@@ -184,8 +194,9 @@ functions:
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
+
   addReview:
-    handler: api/reviews.add
+    handler: api/reviews/handler.add
     events:
       - http:
           path: reviews/add
@@ -195,8 +206,9 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+
   getReviews:
-      handler: api/reviews.getProductID
+      handler: api/reviews/handler.getProductID
       events:
         - http:
             path: reviews/{productID}
@@ -206,13 +218,6 @@ functions:
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
-  reviewsTrigger:
-      handler: api/reviews.reviewsTrigger
-      events:
-        - stream:
-            type: dynamodb
-            arn:
-              Fn::GetAtt: [ "ReviewsDynamoDBTable", "StreamArn" ]
 
 resources:
   Resources:
@@ -264,6 +269,8 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
 
     ReviewsDynamoDBTable:
       Type: AWS::DynamoDB::Table
