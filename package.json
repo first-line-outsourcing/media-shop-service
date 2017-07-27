@@ -9,15 +9,20 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "serverless-plugin-typescript": "^0.5.0"
+    "chai": "^4.1.0",
+    "mocha": "^3.4.2",
+    "serverless-mocha-plugin": "^1.5.0",
+    "serverless-plugin-typescript": "^0.5.0",
+    "ts-node": "^3.3.0"
   },
   "dependencies": {
     "@types/mustache": "^0.8.29",
     "@types/node": "^8.0.7",
     "aws-sdk": "^2.80.0",
+    "aws-sdk-mock": "^1.7.0",
     "faker": "^4.1.0",
+    "jsonwebtoken": "^7.3.0",
     "mustache": "^2.3.0",
-    "wkhtmltopdf": "^0.3.4",
-    "jsonwebtoken": "^7.3.0"
+    "wkhtmltopdf": "^0.3.4"
   }
 }

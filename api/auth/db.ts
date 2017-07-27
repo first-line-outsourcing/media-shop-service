@@ -17,7 +17,7 @@ const getItems = () =>
         });
     });
 
-const getProfileByToken = (id, social) =>
+const getProfile = (id, social) =>
     new Promise((resolve, reject) => {
         console.log('id', id);
         const params = {
@@ -125,4 +125,4 @@ const deleteProfile = (id, social) =>
         });
     });
 
-export default {getItems, getProfileByToken, createProfile, updateProfile, deleteProfile};
+export default {getItems, getProfile, createProfile, updateProfile, deleteProfile};

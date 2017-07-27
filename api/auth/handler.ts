@@ -1,25 +1,26 @@
-const jwt = require('jsonwebtoken');
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
+import { Profile } from '../auth/profile';
 
-import db from './db';
+const jwt = require('jsonwebtoken');
+
+const profile = new Profile();
 
 const AUTH0_CLIENT_ID = 'hfDx6WXS2nkcLUhOcHe0Xq34lZE3wfrH';
 const AUTH0_CLIENT_SECRET = 'wvSHEEB3V_VvnuwxIDWSqukWoI3tTcqf28YYpKndZEXn3pYj3Q0ueJTDpR6ZT_B8';
 
 // Policy helper function
 const generatePolicy = (principalId, effect, resource) => {
-    const authResponse: any = {};
-    authResponse.principalId = principalId;
+    const authResponse = {};
+    authResponse['principalId'] = principalId;
     if (effect && resource) {
-        const policyDocument: any = {};
-        policyDocument.Version = '2012-10-17';
-        policyDocument.Statement = [];
-        const statementOne: any = {};
-        statementOne.Action = 'execute-api:Invoke';
-        statementOne.Effect = effect;
-        statementOne.Resource = resource;
-        policyDocument.Statement[0] = statementOne;
-        authResponse.policyDocument = policyDocument;
+        const policyDocument = {};
+        policyDocument['Version'] = '2012-10-17';
+        policyDocument['Statement'] = [];
+        const statementOne = {};
+        statementOne['Action'] = 'execute-api:Invoke';
+        statementOne['Effect'] = effect;
+        statementOne['Resource'] = resource;
+        policyDocument['Statement'][0] = statementOne;
+        authResponse['policyDocument'] = policyDocument;
     }
     return authResponse;
 };
@@ -53,52 +54,45 @@ export const auth = (event, context, cb) => {
     }
 };
 
-export async function getAllItems(event, context, callback) {
+export function getAllItems(event, context, callback) {
     console.log('getAllItems', JSON.stringify(event));
-    try {
-        const items = await db.getItems();
-        return callback(null, items);
-    } catch (err) {
-        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
-    }
+    profile.getAll()
+        .then((data) => callback(null, data.Items))
+        .catch((error) => callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error'));
 }
 
-export async function getProfile(event, context, callback) {
+export function getProfile(event, context, callback) {
     console.log('getProfile', JSON.stringify(event));
-    try {
-        const [social, id] = event.principalId.split('|');
-        const item = await db.getProfileByToken(id, social);
-        return callback(null, item);
-    } catch (err) {
-        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
-    }
+    const [social, id] = event.principalId.split('|');
+    profile.get(id, social)
+        .then((data) => {
+            console.log('item= ', data);
+            callback(null, data.Item);
+        })
+        .catch((error) => {
+            console.log('error= ', error);
+            callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
+        });
 }
 
 export async function updateProfile(event, context, callback) {
     console.log('updateProfile', JSON.stringify(event.body));
-    try {
-        const [social, id] = event.principalId.split('|');
-        await db.updateProfile(id, social, event.body.field, event.body.value);
-
-        return callback(null, null);
-    } catch (err) {
-        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
-    }
+    const [social, id] = event.principalId.split('|');
+    profile.update(id, social, event.body.field, event.body.value)
+        .then(() => callback())
+        .catch((error) => callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error'));
 }
 
-export async function createProfile(event, context, callback) {
+export function createProfile(event, context, callback) {
     console.log('createProfile', JSON.stringify(event));
-
-    try {
-        const [social, id] = event.principalId.split('|');
-        const item = await db.createProfile(id, social, event.body);
-
-        return callback(null, createResponse(201, item));
-    } catch (err) {
-        if (err.statusCode === 400) {
-            return callback(null, createResponse(400, 'User already exist'))
-        } else {
-            return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
-        }
-    }
+    const [social, id] = event.principalId.split('|');
+    profile.create(id, social, event.body)
+        .then((data) => callback(null, createResponse(201, data.Item)))
+        .catch((error) => {
+            if (error.statusCode === 400) {
+                callback(null, createResponse(400, 'User already exist'))
+            } else {
+                callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
+            }
+        })
 }

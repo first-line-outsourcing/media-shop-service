@@ -1,4 +1,4 @@
-service: bmt-media-shop-service
+service: bmt-media-shop-service-unit-tests
 
 provider:
   name: aws
@@ -39,65 +39,67 @@ package:
     - wkhtmltopdf
 
 functions:
+  functionName:
+    handler: handler
   auth:
     handler: api/auth/handler.auth
 
-  print:
-    handler: api/print.receipt
-    events:
-      - http:
-          path: receipt
-          method: post
-          integration: lambda
-          cors: true
-          response:
-            headers:
-              Access-Control-Allow-Origin: "'*'"
-
-  createPromocode:
-    handler: api/promocode/handler.create
-    events:
-      - http:
-          path: promocode/create
-          method: put
-          integration: lambda
-          cors: true
-          authorizer:
-            name: auth
-            resultTtlInSeconds: 0
-          response:
-            headers:
-              Access-Control-Allow-Origin: "'*'"
-
-  checkPromocode:
-      handler: api/promocode/handler.check
-      events:
-        - http:
-            path: promocode/check
-            method: put
-            integration: lambda
-            cors: true
-            authorizer:
-              name: auth
-              resultTtlInSeconds: 0
-            response:
-              headers:
-                Access-Control-Allow-Origin: "'*'"
-
-  getPromocode:
-      handler: api/promocode/handler.get
-      events:
-        - http:
-            path: promocode/get
-            method: get
-            integration: lambda
-            cors: true
-            authorizer:
-              name: auth
-              resultTtlInSeconds: 0
-            response:
-              headers:
-                Access-Control-Allow-Origin: "'*'"
+#  print:
+#    handler: api/print.receipt
+#    events:
+#      - http:
+#          path: receipt
+#          method: post
+#          integration: lambda
+#          cors: true
+#          response:
+#            headers:
+#              Access-Control-Allow-Origin: "'*'"
+#
+#  createPromocode:
+#    handler: api/promocode/handler.create
+#    events:
+#      - http:
+#          path: promocode/create
+#          method: put
+#          integration: lambda
+#          cors: true
+#          authorizer:
+#            name: auth
+#            resultTtlInSeconds: 0
+#          response:
+#            headers:
+#              Access-Control-Allow-Origin: "'*'"
+#
+#  checkPromocode:
+#      handler: api/promocode/handler.check
+#      events:
+#        - http:
+#            path: promocode/check
+#            method: put
+#            integration: lambda
+#            cors: true
+#            authorizer:
+#              name: auth
+#              resultTtlInSeconds: 0
+#            response:
+#              headers:
+#                Access-Control-Allow-Origin: "'*'"
+#
+#  getPromocode:
+#      handler: api/promocode/handler.get
+#      events:
+#        - http:
+#            path: promocode/get
+#            method: get
+#            integration: lambda
+#            cors: true
+#            authorizer:
+#              name: auth
+#              resultTtlInSeconds: 0
+#            response:
+#              headers:
+#                Access-Control-Allow-Origin: "'*'"
 
   getAllItems:
     handler: api/auth/handler.getAllItems
@@ -122,9 +124,9 @@ functions:
           method: get
           integration: lambda
           cors: true
-          authorizer:
-            name: auth
-            resultTtlInSeconds: 0
+#          authorizer:
+#            name: auth
+#            resultTtlInSeconds: 0
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
@@ -159,18 +161,18 @@ functions:
             headers:
               Access-Control-Allow-Origin: "'*'"
 
-  getSelling:
-      handler: api/admin.getSelling
-
-      events:
-        - http:
-            path: api/admin/getSelling
-            method: get
-            integration: lambda
-            cors: true
-            response:
-              headers:
-                Access-Control-Allow-Origin: "'*'"
+#  getSelling:
+#      handler: api/admin.getSelling
+#
+#      events:
+#        - http:
+#            path: api/admin/getSelling
+#            method: get
+#            integration: lambda
+#            cors: true
+#            response:
+#              headers:
+#                Access-Control-Allow-Origin: "'*'"
 
 resources:
   Resources:
@@ -182,28 +184,28 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.BUCKET}
-    PromocodeDynamoDb:
-      Type: AWS::DynamoDB::Table
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          -
-            AttributeName: "id"
-            AttributeType: "S"
-          - AttributeName: "social"
-            AttributeType: "S"
-        KeySchema:
-          -
-            AttributeName: "id"
-            KeyType: "HASH"
-          - AttributeName: "social"
-            KeyType: "RANGE"
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        StreamSpecification:
-          StreamViewType: "NEW_AND_OLD_IMAGES"
-        TableName: ${self:provider.environment.PROMOCODE_TABLE}
+#    PromocodeDynamoDb:
+#      Type: AWS::DynamoDB::Table
+#      DeletionPolicy: Retain
+#      Properties:
+#        AttributeDefinitions:
+#          -
+#            AttributeName: "id"
+#            AttributeType: "S"
+#          - AttributeName: "social"
+#            AttributeType: "S"
+#        KeySchema:
+#          -
+#            AttributeName: "id"
+#            KeyType: "HASH"
+#          - AttributeName: "social"
+#            KeyType: "RANGE"
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 1
+#          WriteCapacityUnits: 1
+#        StreamSpecification:
+#          StreamViewType: "NEW_AND_OLD_IMAGES"
+#        TableName: ${self:provider.environment.PROMOCODE_TABLE}
 
     ItemsTable:
       Type: "AWS::DynamoDB::Table"
@@ -224,3 +226,4 @@ resources:
           WriteCapacityUnits: 1
 plugins:
   - serverless-plugin-typescript
+  - serverless-mocha-plugin
