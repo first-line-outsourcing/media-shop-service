@@ -1,4 +1,4 @@
-service: bmt-media-shop-service-unit-tests
+service: bmt-media-shop-service
 
 provider:
   name: aws
@@ -19,6 +19,10 @@ provider:
           - - "arn:aws:s3:::*"
     - Effect: "Allow"
       Action:
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:DescribeStream
+        - dynamodb:ListStreams
         - dynamodb:DescribeTable
         - dynamodb:Query
         - dynamodb:Scan
@@ -39,8 +43,6 @@ package:
     - wkhtmltopdf
 
 functions:
-  functionName:
-    handler: handler
   auth:
     handler: api/auth/handler.auth
 
@@ -100,6 +102,16 @@ functions:
 #            response:
 #              headers:
 #                Access-Control-Allow-Origin: "'*'"
+
+  removePromocode:
+    handler: api/promocode/handler.remove
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - ItemsTable
+              - StreamArn
 
   getAllItems:
     handler: api/auth/handler.getAllItems
@@ -224,6 +236,8 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: "NEW_AND_OLD_IMAGES"
 plugins:
   - serverless-plugin-typescript
   - serverless-mocha-plugin

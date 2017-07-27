@@ -1,4 +1,5 @@
 import { Promocode } from './promocode';
+import { DynamoDB } from 'aws-sdk';
 
 export function create(event, context, callback) {
   const [social, id] = event.principalId.split('|');
@@ -61,7 +62,7 @@ export function check(event, context, callback) {
   const promocode = new Promocode();
 
   promocode.check(id, social, data.promocode)
-    .then((data) => callback(null, { persent: data[0] }))
+    .then((data) => callback(null, { persent: data }))
     .catch((err) => {
       console.log(err);
       callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error')
@@ -77,10 +78,37 @@ export function get(event, context, callback) {
   const promocode = new Promocode();
 
   promocode.get(id, social)
-    .then((data) => callback(null, { promocode: data.Item.promocode, persent: data.Item.persent }))
+    .then((data) => callback(null,
+      { promocode: data.Item && data.Item.promocode ? data.Item.promocode : '',
+        persent: data.Item && data.Item.persent ? data.Item.persent : 0 }))
     .catch((err) => {
       console.log(err);
       callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
     });
+}
+
+export function remove(event, context, callback){
+  const data = event.Records[0].dynamodb;
+  console.log(data);
+
+  const keys = DynamoDB.Converter.unmarshall(data.Keys);
+  console.log('keys:', keys);
+
+  const newImage = DynamoDB.Converter.unmarshall(data.NewImage);
+  const oldImage =  DynamoDB.Converter.unmarshall(data.OldImage);
+  console.log(newImage);
+  console.log(oldImage);
+
+  if(newImage.orders && oldImage.orders && newImage.orders.length > oldImage.orders.length) {
+    const promoCode = newImage.orders[newImage.orders.length - 1].formProfile.promoCode;
+    if (promoCode) {
+      const promocode = new Promocode();
+      promocode.check(keys.id, keys.social, promoCode)
+        .then(() => promocode.remove(keys.id, keys.social))
+        .then(() => console.log('Promocode is removed'))
+        .catch((err) => console.log(err))
+    }
+  }
+
 }
 
