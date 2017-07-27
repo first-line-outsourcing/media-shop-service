@@ -173,16 +173,6 @@ functions:
             headers:
               Access-Control-Allow-Origin: "'*'"
 
-#  prodfileTrigger:
-#        handler: api/triggers/handler.updateProfile
-#        events:
-#          - stream:
-#              type: dynamodb
-#              arn:
-#                Fn::GetAtt:
-#                  - ReviewsDynamoDBTable
-#                  - StreamArn
-
   getSelling:
       handler: api/admin.getSelling
       events:
