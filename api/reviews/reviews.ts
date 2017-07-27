@@ -23,7 +23,7 @@ export class Reviews {
     return this.db.put(params).promise();
   }
 
-  public getProductID(id) {
+  public getByProductID(id) {
     const params = {
       TableName: process.env.TABLE_REVIEWS,
       FilterExpression: "#productID = :pID",

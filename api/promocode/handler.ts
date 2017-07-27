@@ -41,7 +41,7 @@ export function create(event, context, callback) {
     .then((data) => callback(null, { persent }))
     .catch((err) => {
       console.log(err);
-      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later');
     });
 }
 
@@ -65,7 +65,7 @@ export function check(event, context, callback) {
     .then((data) => callback(null, { persent: data }))
     .catch((err) => {
       console.log(err);
-      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error')
+      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later')
     });
 }
 
@@ -83,7 +83,7 @@ export function get(event, context, callback) {
         persent: data.Item && data.Item.persent ? data.Item.persent : 0 }))
     .catch((err) => {
       console.log(err);
-      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later');
     });
 }
 

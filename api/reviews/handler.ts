@@ -14,13 +14,13 @@ export function add(event, context, callback) {
     })
     .catch((error) => {
       console.log(error);
-      return callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
+      return callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Server error. Please try later');
     })
 }
 
-export function getProductID(event, context, callback) {
+export function getByProductID(event, context, callback) {
   const reviews = new Reviews();
-  reviews.getProductID(event.path.productID)
+  reviews.getByProductID(event.path.productID)
     .then((data) => {
       console.log(data);
       callback(
@@ -33,7 +33,7 @@ export function getProductID(event, context, callback) {
     })
     .catch((error) => {
       console.log(error);
-      return callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
+      return callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Server error. Please try later');
     })
 }
 
