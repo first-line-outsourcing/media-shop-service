@@ -67,11 +67,11 @@ export function getProfile(event, context, callback) {
     profile.get(id, social)
         .then((data) => {
             console.log('item= ', data);
-            callback(null, data.Item);
+            return callback(null, data.Item);
         })
         .catch((error) => {
             console.log('error= ', error);
-            callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
+            return callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
         });
 }
 

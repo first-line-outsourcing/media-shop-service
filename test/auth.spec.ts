@@ -1,4 +1,6 @@
 import * as profileFunc from '../api/auth/handler';
+import { expect } from 'chai';
+
 const AWS = require('aws-sdk-mock');
 
 AWS.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
@@ -6,6 +8,7 @@ AWS.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
 });
 
 describe('first test', () => {
+
     it('first it', (done) => {
         return new Promise((resolve, reject) => {
             const event = {
@@ -13,7 +16,7 @@ describe('first test', () => {
             };
             const context = {};
             const callback = (ctx, data) => {
-
+                console.log(data);
                 if (data.statusCode == 200) {
                     resolve(data);
                     done();
@@ -24,4 +27,5 @@ describe('first test', () => {
             profileFunc.getProfile(event, context, callback);
         });
     });
+
 });

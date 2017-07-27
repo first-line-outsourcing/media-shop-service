@@ -5,7 +5,7 @@
   "main": "handler.js",
   "scripts": {
     "start": "sls deploy",
-    "test": "mocha -r ts-node/register test/auth.spec.ts"
+    "test": "mocha --timeout 15000 -r ts-node/register test/auth.spec.ts"
   },
   "author": "",
   "license": "ISC",
