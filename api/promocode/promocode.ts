@@ -1,4 +1,5 @@
 import { DynamoDB } from 'aws-sdk';
+import { int } from 'aws-sdk/clients/datapipeline';
 
 export class Promocode {
 
@@ -8,7 +9,7 @@ export class Promocode {
     this.db = new DynamoDB.DocumentClient();
   }
 
-  public create(id: string, social: string, persent: number) {
+  public create(id: string, social: string, persent: number): Promise {
     const promocode = Promocode.generatePromocode(5);
 
     const params = {
@@ -24,7 +25,7 @@ export class Promocode {
     return this.db.put(params).promise();
   }
 
-  public check(id: string, social: string, promocode: string) {
+  public check(id: string, social: string, promocode: string): Promise<number> {
     const params = {
       TableName: process.env.PROMOCODE_TABLE as string,
         Key: {
@@ -43,7 +44,7 @@ export class Promocode {
       });
   }
 
-  public get(id: string, social: string) {
+  public get(id: string, social: string): Promise<PromocodeData> {
     const params = {
       TableName: process.env.PROMOCODE_TABLE as string,
       Key: {
@@ -55,7 +56,7 @@ export class Promocode {
     return this.db.get(params).promise();
   }
 
-  public remove(id: string, social: string) {
+  public remove(id: string, social: string): Promise {
     const params = {
       TableName: process.env.PROMOCODE_TABLE as string,
       Key: {
@@ -76,4 +77,22 @@ export class Promocode {
     code+='-TECH';
     return code;
   }
+}
+
+interface PromocodeData {
+  Item: {
+    id: string,
+    social: string,
+    promocode: string,
+    persent: number
+  }
+}
+
+export interface CreateBody {
+  isNewUser: boolean,
+  orderCount: number
+}
+
+export interface CheckBody {
+  promocode: string
 }

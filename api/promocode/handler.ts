@@ -1,16 +1,16 @@
-import { Promocode } from './promocode';
+import { CheckBody, CreateBody, Promocode } from './promocode';
 
 export function create(event, context, callback) {
-  const [social, id] = event.principalId.split('|');
+  const [social, id]: string = event.principalId.split('|');
 
   console.log('id: ', id);
   console.log('social: ', social);
 
-  const data = event.body;
+  const data: CreateBody = event.body;
 
   console.log('data: ', data);
 
-  let persent;
+  let persent: number;
 
   if (data.isNewUser) {
     persent = 10;
@@ -34,7 +34,7 @@ export function create(event, context, callback) {
     }
   }
 
-  const promocode = new Promocode();
+  const promocode: Promocode = new Promocode();
 
   promocode.create(id, social, persent)
     .then((data) => callback(null, { persent }))
@@ -46,12 +46,12 @@ export function create(event, context, callback) {
 }
 
 export function check(event, context, callback) {
-  const [social, id] = event.principalId.split('|');
+  const [social, id]: string = event.principalId.split('|');
 
   console.log('id: ', id);
   console.log('social: ', social);
 
-  const data = event.body;
+  const data: CheckBody = event.body;
 
   console.log('data: ', data);
 
@@ -59,7 +59,7 @@ export function check(event, context, callback) {
     return callback('[400] Body must have a promocode.');
   }
 
-  const promocode = new Promocode();
+  const promocode: Promocode = new Promocode();
 
   promocode.check(id, social, data.promocode)
     .then((data) => callback(null, { persent: data }))
@@ -71,12 +71,12 @@ export function check(event, context, callback) {
 }
 
 export function get(event, context, callback) {
-  const [social, id] = event.principalId.split('|');
+  const [social, id]: string = event.principalId.split('|');
 
   console.log('id: ', id);
   console.log('social: ', social);
 
-  const promocode = new Promocode();
+  const promocode: Promocode = new Promocode();
 
   promocode.get(id, social)
     .then((data) => callback(null,
@@ -90,12 +90,12 @@ export function get(event, context, callback) {
 }
 
 export function remove(event, context, callback){
-  const [social, id] = event.principalId.split('|');
+  const [social, id]: string = event.principalId.split('|');
 
   console.log('id:', id);
   console.log('social:', social);
 
-  const promocode = new Promocode();
+  const promocode: Promocode = new Promocode();
   promocode.remove(id, social)
     .then(() => callback(null, 'Promocode is deleted'))
     .catch((err) => {
