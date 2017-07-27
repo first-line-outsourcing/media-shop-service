@@ -1,7 +1,7 @@
 import { CheckBody, CreateBody, Promocode } from './promocode';
 
 export function create(event, context, callback) {
-  const [social, id]: string = event.principalId.split('|');
+  const [social, id] = event.principalId.split('|');
 
   console.log('id: ', id);
   console.log('social: ', social);
@@ -46,7 +46,7 @@ export function create(event, context, callback) {
 }
 
 export function check(event, context, callback) {
-  const [social, id]: string = event.principalId.split('|');
+  const [social, id] = event.principalId.split('|');
 
   console.log('id: ', id);
   console.log('social: ', social);
@@ -71,7 +71,7 @@ export function check(event, context, callback) {
 }
 
 export function get(event, context, callback) {
-  const [social, id]: string = event.principalId.split('|');
+  const [social, id] = event.principalId.split('|');
 
   console.log('id: ', id);
   console.log('social: ', social);
@@ -90,7 +90,7 @@ export function get(event, context, callback) {
 }
 
 export function remove(event, context, callback){
-  const [social, id]: string = event.principalId.split('|');
+  const [social, id] = event.principalId.split('|');
 
   console.log('id:', id);
   console.log('social:', social);
