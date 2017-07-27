@@ -8,7 +8,7 @@ export class Promocode {
     this.db = new DynamoDB.DocumentClient();
   }
 
-  public create(id: string, social: string, persent: number): Promise {
+  public create(id: string, social: string, persent: number): Promise<any> {
     const promocode = Promocode.generatePromocode(5);
 
     const params = {
@@ -55,7 +55,7 @@ export class Promocode {
     return this.db.get(params).promise();
   }
 
-  public remove(id: string, social: string): Promise {
+  public remove(id: string, social: string): Promise<any> {
     const params = {
       TableName: process.env.PROMOCODE_TABLE as string,
       Key: {
