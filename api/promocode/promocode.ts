@@ -1,5 +1,4 @@
 import { DynamoDB } from 'aws-sdk';
-import { int } from 'aws-sdk/clients/datapipeline';
 
 export class Promocode {
 
