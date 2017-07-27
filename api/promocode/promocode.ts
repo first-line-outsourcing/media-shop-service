@@ -35,8 +35,8 @@ export class Promocode {
 
     return this.db.get(params).promise()
       .then((data) => {
-        if (data.Item.promocode === promocode) {
-          return Promise.all([data.Item.persent, this.remove(id, social)])
+        if (data.Item && data.Item.promocode === promocode) {
+          return data.Item.persent;
         } else {
           return Promise.reject({ statusCode: 400, message: 'Invalid promocode'});
         }
@@ -55,7 +55,7 @@ export class Promocode {
     return this.db.get(params).promise();
   }
 
-  private remove(id: string, social: string) {
+  public remove(id: string, social: string) {
     const params = {
       TableName: process.env.PROMOCODE_TABLE as string,
       Key: {

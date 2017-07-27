@@ -18,6 +18,10 @@ provider:
           - - "arn:aws:s3:::*"
     - Effect: "Allow"
       Action:
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:DescribeStream
+        - dynamodb:ListStreams
         - dynamodb:DescribeTable
         - dynamodb:Query
         - dynamodb:Scan
@@ -25,8 +29,6 @@ provider:
         - dynamodb:PutItem
         - dynamodb:DeleteItem
         - dynamodb:UpdateItem
-        - dynamodb:ListStreams
-        - dynamodb:DescribeStream
       Resource: "*"
 
   environment:
@@ -72,34 +74,44 @@ functions:
               Access-Control-Allow-Origin: "'*'"
 
   checkPromocode:
-      handler: api/promocode/handler.check
-      events:
-        - http:
-            path: promocode/check
-            method: put
-            integration: lambda
-            cors: true
-            authorizer:
-              name: auth
-              resultTtlInSeconds: 0
-            response:
-              headers:
-                Access-Control-Allow-Origin: "'*'"
+    handler: api/promocode/handler.check
+    events:
+      - http:
+          path: promocode/check
+          method: put
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
   getPromocode:
-      handler: api/promocode/handler.get
-      events:
-        - http:
-            path: promocode/get
-            method: get
-            integration: lambda
-            cors: true
-            authorizer:
-              name: auth
-              resultTtlInSeconds: 0
-            response:
-              headers:
-                Access-Control-Allow-Origin: "'*'"
+    handler: api/promocode/handler.get
+    events:
+      - http:
+          path: promocode/get
+          method: get
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  removePromocode:
+    handler: api/promocode/handler.remove
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - ItemsTable
+              - StreamArn
 
   getAllItems:
     handler: api/auth/handler.getAllItems
