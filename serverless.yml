@@ -195,18 +195,6 @@ functions:
               headers:
                 Access-Control-Allow-Origin: "'*'"
 
-  notification:
-      handler: api/notification.sendmail
-      events:
-        - http:
-            path: notification
-            method: get
-            integration: lambda
-            cors: true
-            response:
-              headers:
-                Access-Control-Allow-Origin: "'*'"
-
   addReview:
     handler: api/reviews/handler.add
     events:
