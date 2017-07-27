@@ -124,9 +124,9 @@ functions:
           method: get
           integration: lambda
           cors: true
-#          authorizer:
-#            name: auth
-#            resultTtlInSeconds: 0
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
