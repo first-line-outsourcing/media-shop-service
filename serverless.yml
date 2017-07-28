@@ -19,10 +19,6 @@ provider:
           - - "arn:aws:s3:::*"
     - Effect: "Allow"
       Action:
-        - dynamodb:GetRecords
-        - dynamodb:GetShardIterator
-        - dynamodb:DescribeStream
-        - dynamodb:ListStreams
         - dynamodb:DescribeTable
         - dynamodb:Query
         - dynamodb:Scan
@@ -107,12 +103,17 @@ functions:
   removePromocode:
     handler: api/promocode/handler.remove
     events:
-      - stream:
-          type: dynamodb
-          arn:
-            Fn::GetAtt:
-              - ItemsTable
-              - StreamArn
+      - http:
+          path: promocode/remove
+          method: delete
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
   getAllItems:
     handler: api/auth/handler.getAllItems
