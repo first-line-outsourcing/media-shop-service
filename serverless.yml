@@ -1,4 +1,4 @@
-service: bmt-media-shop-service
+service: bmt-media-shop-service-order
 
 provider:
   name: aws
@@ -37,6 +37,7 @@ provider:
     PDF_BUCKET: ${self:service}-pdf
     PROMOCODE_TABLE: ${self:service}-promocode
     USERS_TABLE: ${self:service}-users
+    ORDERs_TABLE: ${self:service}-orders
 
 package:
   include:
@@ -173,18 +174,32 @@ functions:
             headers:
               Access-Control-Allow-Origin: "'*'"
 
-  getSelling:
-      handler: api/admin.getSelling
+  getOrders:
+    handler: api/admin/handler.getOrders
+    events:
+      - http:
+        path: api/admin/getOrders
+        method: get
+        integration: lambda
+        cors: true
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
 
-      events:
-        - http:
-            path: api/admin/getSelling
-            method: get
-            integration: lambda
-            cors: true
-            response:
-              headers:
-                Access-Control-Allow-Origin: "'*'"
+  createOrder:
+    handler: api/admin/handler.createOrder
+    events:
+      - http:
+          method: post
+          path: api/admin/createOrder
+          cors: true
+          integration: lambda
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          respomse:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
 resources:
   Resources:
@@ -238,5 +253,22 @@ resources:
           WriteCapacityUnits: 1
         StreamSpecification:
           StreamViewType: "NEW_AND_OLD_IMAGES"
+
+    OrdersDynamoDb:
+          Type: AWS::DynamoDB::Table
+          DeletionPolicy: Retain
+          Properties:
+            AttributeDefinitions:
+              - AttributeName: "id"
+                AttributeType: "S"
+            KeySchema:
+              - AttributeName: "id"
+                KeyType: "HASH"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+            StreamSpecification:
+              StreamViewType: "NEW_AND_OLD_IMAGES"
+            TableName: ${self:provider.environment.ORDERs_TABLE}
 plugins:
   - serverless-plugin-typescript
