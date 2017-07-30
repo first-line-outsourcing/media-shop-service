@@ -1,5 +1,4 @@
 service: bmt-media-shop-service
-
 provider:
   name: aws
   runtime: nodejs6.10
@@ -31,6 +30,7 @@ provider:
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
+    REVIEWS_TABLE: ${self:service}-table-reviews
     PROMOCODE_TABLE: ${self:service}-promocode
     USERS_TABLE: ${self:service}-users
 
@@ -176,10 +176,33 @@ functions:
 
   getSelling:
       handler: api/admin.getSelling
-
       events:
         - http:
             path: api/admin/getSelling
+            method: get
+            integration: lambda
+            cors: true
+            response:
+              headers:
+                Access-Control-Allow-Origin: "'*'"
+
+  addReview:
+    handler: api/reviews/handler.add
+    events:
+      - http:
+          path: reviews/add
+          method: post
+          integration: lambda
+          cors: true
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  getReviews:
+      handler: api/reviews/handler.getByProductID
+      events:
+        - http:
+            path: reviews/{productID}
             method: get
             integration: lambda
             cors: true
@@ -238,6 +261,24 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         StreamSpecification:
-          StreamViewType: "NEW_AND_OLD_IMAGES"
+          StreamViewType: NEW_AND_OLD_IMAGES
+
+    ReviewsDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.REVIEWS_TABLE}
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
 plugins:
   - serverless-plugin-typescript

@@ -16,7 +16,7 @@ export async function getSelling (event, context, callback) {
   try {
     profiles = await db.getItems();
   } catch (err) {
-    return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+    return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later');
   }
 
   console.log('profiles =', JSON.stringify(profiles));

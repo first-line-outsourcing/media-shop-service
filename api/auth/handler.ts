@@ -59,7 +59,7 @@ export async function getAllItems(event, context, callback) {
         const items = await db.getItems();
         return callback(null, items);
     } catch (err) {
-        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later');
     }
 }
 
@@ -70,7 +70,7 @@ export async function getProfile(event, context, callback) {
         const item = await db.getProfileByToken(id, social);
         return callback(null, item);
     } catch (err) {
-        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later');
     }
 }
 
@@ -82,7 +82,7 @@ export async function updateProfile(event, context, callback) {
 
         return callback(null, null);
     } catch (err) {
-        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+        return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later');
     }
 }
 
@@ -98,7 +98,7 @@ export async function createProfile(event, context, callback) {
         if (err.statusCode === 400) {
             return callback(null, createResponse(400, 'User already exist'))
         } else {
-            return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+            return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later');
         }
     }
 }
