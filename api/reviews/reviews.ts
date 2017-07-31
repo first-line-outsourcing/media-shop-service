@@ -10,7 +10,7 @@ export class Reviews {
 
   public add(data) {
     const params = {
-      TableName: process.env.TABLE_REVIEWS,
+      TableName: process.env.REVIEWS_TABLE,
       Item: {
         id: uuid.v1(),
         username: data.username,
@@ -25,7 +25,7 @@ export class Reviews {
 
   public getByProductID(id) {
     const params = {
-      TableName: process.env.TABLE_REVIEWS,
+      TableName: process.env.REVIEWS_TABLE,
       FilterExpression: "#productID = :pID",
       ExpressionAttributeNames: {
         "#productID": "productID",
