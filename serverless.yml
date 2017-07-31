@@ -33,7 +33,7 @@ provider:
     PDF_BUCKET: ${self:service}-pdf
     PROMOCODE_TABLE: ${self:service}-promocode
     USERS_TABLE: ${self:service}-users
-    ORDERs_TABLE: ${self:service}-orders
+    ORDERS_TABLE: ${self:service}-orders
 
 package:
   include:
@@ -179,13 +179,13 @@ functions:
     handler: api/admin/handler.getOrders
     events:
       - http:
-        path: api/admin/getOrders
-        method: get
-        integration: lambda
-        cors: true
-        response:
-          headers:
-            Access-Control-Allow-Origin: "'*'"
+          path: api/admin/getOrders
+          method: get
+          integration: lambda
+          cors: true
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
   createOrder:
     handler: api/admin/handler.createOrder
@@ -198,9 +198,24 @@ functions:
           authorizer:
             name: auth
             resultTtlInSeconds: 0
-          respomse:
+          response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+
+  getOrdersByProfile:
+      handler: api/admin/handler.getOrdersByProfile
+      events:
+        - http:
+            method: get
+            path: api/admin/getOrdersByProfile
+            cors: true
+            integration: lambda
+            authorizer:
+              name: auth
+              resultTtlInSeconds: 0
+            response:
+              headers:
+                Access-Control-Allow-Origin: "'*'"
 
 resources:
   Resources:
@@ -270,6 +285,6 @@ resources:
               WriteCapacityUnits: 1
             StreamSpecification:
               StreamViewType: "NEW_AND_OLD_IMAGES"
-            TableName: ${self:provider.environment.ORDERs_TABLE}
+            TableName: ${self:provider.environment.ORDERS_TABLE}
 plugins:
   - serverless-plugin-typescript

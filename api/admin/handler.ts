@@ -28,12 +28,30 @@ export function getOrders (event, context, callback) {
   const adminPanel = new AdminPanel();
 
   adminPanel.getOrders(from, to)
-    .then((data) => callback(null, data))
+    .then((data) => {
+      console.log('orders =', data);
+      callback(null, data)
+    })
     .catch((err) => {
       console.log(err);
       callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
     })
 
+}
+
+export function getOrdersByProfile (event, context, callback) {
+  const id = event.principalId.split('|')[1];
+
+  console.log('id:', id);
+
+  const adminPanel = new AdminPanel();
+
+
+  adminPanel.getOrdersByProfile(id)
+    .then((data) => callback(null, data))
+    .catch((err) => {
+      callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
+    });
 }
 
 

@@ -21,7 +21,7 @@ export class AdminPanel {
     };
 
     const paramsOrdersTable = {
-      TableName: process.env.Orders_TABLE as string
+      TableName: process.env.ORDERS_TABLE as string
     };
 
     let lastIndex = getRandom(500);
@@ -42,19 +42,23 @@ export class AdminPanel {
       });
     }
 
-    Promise.all([this.db.scan(paramsUsersTable), this.db.scan(paramsOrdersTable)])
-      .then(([profiles, orders]) => orders.forEach((order) => {
-        console.log('data from usersTable = ', JSON.stringify(profiles));
-        console.log('data from ordersTable = ', JSON.stringify(orders));
-        let orderedByProfile = profiles.find((profile) => profile.id === order.orderedBy);
-        order.formProfile.firstName = orderedByProfile.firstName;
-        order.formProfile.lastName = orderedByProfile.lastName;
-        formedOrders.push(order);
-      }));
+     return Promise.all([this.db.scan(paramsUsersTable).promise(), this.db.scan(paramsOrdersTable).promise()])
+      .then(([profiles, orders]) => {
+        console.log('data from usersTable = ', profiles);
+        console.log('data from ordersTable = ', orders);
+        orders.Items.forEach((order) => {
+          let orderedByProfile = profiles.Items.find((profile) => profile.id === order.orderedBy);
+          console.log(orderedByProfile.firstName);
+          order.formProfile.firstName = orderedByProfile.firstName;
+          order.formProfile.lastName = orderedByProfile.lastName;
+          formedOrders.push(order);
+          console.log('asd', formedOrders);
+        });
+        return formedOrders;
+      })
+       .then((data) => Promise.resolve(data));
 
-    console.log('Formed orders =', JSON.stringify(formedOrders));
 
-    return new Promise((resolve, reject)=> resolve(formedOrders));
   }
 
   public createOrder (id, orderData) {
@@ -62,11 +66,24 @@ export class AdminPanel {
     orderData.orderedBy = id;
 
       const params = {
-        TableName: process.env.ORDER_TABLE as string,
+        TableName: process.env.ORDERS_TABLE as string,
         Item: orderData
       };
 
       return this.db.put(params).promise();
+  }
+
+  public getOrdersByProfile (id) {
+    console.log('id = ', id);
+    const params = {
+      TableName: process.env.ORDERS_TABLE as string,
+      FilterExpression: "orderedBy = :id",
+      ExpressionAttributeValues: {
+        ":id": id.toString()
+      }
+    };
+
+    return this.db.scan(params).promise();
   }
 }
 
