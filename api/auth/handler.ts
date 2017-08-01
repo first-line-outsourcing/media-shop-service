@@ -1,4 +1,5 @@
 import { Profile } from '../auth/profile';
+import * as AWS from 'aws-sdk';
 
 const jwt = require('jsonwebtoken');
 
@@ -25,12 +26,12 @@ const generatePolicy = (principalId, effect, resource) => {
     return authResponse;
 };
 
-const createResponse = (statusCode, body) => (
-    {
+function createResponse(statusCode, body) {
+    return {
         statusCode,
-        body,
+        body
     }
-);
+}
 
 // Reusable Authorizer function, set on `authorizer` field in serverless.yml
 export const auth = (event, context, cb) => {
@@ -66,16 +67,16 @@ export function getProfile(event, context, callback) {
     const [social, id] = event.principalId.split('|');
     profile.get(id, social)
         .then((data) => {
-            console.log('item= ', data);
-            return callback(null, data.Item);
+            console.log('profile= ', data);
+            callback(null, data.Item);
         })
         .catch((error) => {
             console.log('error= ', error);
-            return callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
+            callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
         });
 }
 
-export async function updateProfile(event, context, callback) {
+export function updateProfile(event, context, callback) {
     console.log('updateProfile', JSON.stringify(event.body));
     const [social, id] = event.principalId.split('|');
     profile.update(id, social, event.body.field, event.body.value)
@@ -84,11 +85,15 @@ export async function updateProfile(event, context, callback) {
 }
 
 export function createProfile(event, context, callback) {
-    console.log('createProfile', JSON.stringify(event));
+    console.log('createProfile', event);
     const [social, id] = event.principalId.split('|');
     profile.create(id, social, event.body)
-        .then((data) => callback(null, createResponse(201, data.Item)))
+        .then((data) => {
+            console.log('handler create=', data);
+            callback(null, data.Item)
+        })
         .catch((error) => {
+            console.log('create error=', error);
             if (error.statusCode === 400) {
                 callback(null, createResponse(400, 'User already exist'))
             } else {

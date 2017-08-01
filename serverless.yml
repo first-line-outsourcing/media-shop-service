@@ -1,4 +1,4 @@
-service: bmt-media-shop-service
+service: bmt-media-shop-service-unit-tests
 
 provider:
   name: aws
@@ -41,6 +41,15 @@ provider:
 package:
   include:
     - wkhtmltopdf
+
+custom:
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
 
 functions:
   auth:
@@ -219,7 +228,7 @@ resources:
 #          StreamViewType: "NEW_AND_OLD_IMAGES"
 #        TableName: ${self:provider.environment.PROMOCODE_TABLE}
 
-    ItemsTable:
+    usersTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
         TableName: ${self:provider.environment.USERS_TABLE}
@@ -240,4 +249,6 @@ resources:
           StreamViewType: "NEW_AND_OLD_IMAGES"
 plugins:
   - serverless-plugin-typescript
-  - serverless-mocha-plugin
+  - serverless-dynamodb-local
+  - serverless-offline
+

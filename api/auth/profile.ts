@@ -4,10 +4,18 @@ export class Profile {
     private db;
 
     constructor() {
-        this.db = new AWS.DynamoDB.DocumentClient();
+        if (process.env.IS_OFFLINE) {
+            this.db = new AWS.DynamoDB.DocumentClient({
+                region: 'localhost',
+                endpoint: 'http://localhost:8000/'
+            });
+        } else {
+            this.db = new AWS.DynamoDB.DocumentClient();
+        }
     }
 
     public create(id, social, userData) {
+        console.log('userData=', userData);
         const params = {
             TableName: process.env.USERS_TABLE as string,
             ConditionExpression: 'attribute_not_exists(id)',
@@ -25,10 +33,13 @@ export class Profile {
                 address: userData.address
             },
         };
+        console.log('params', params);
+        console.log('create profile lambda');
         return this.db.put(params).promise();
     }
 
     public get(id: string, social: string) {
+        console.log('env =', process.env);
         const params = {
             TableName: process.env.USERS_TABLE as string,
             Key: {
