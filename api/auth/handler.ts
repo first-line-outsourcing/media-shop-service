@@ -7,7 +7,7 @@ const AUTH0_CLIENT_ID = 'hfDx6WXS2nkcLUhOcHe0Xq34lZE3wfrH';
 const AUTH0_CLIENT_SECRET = 'wvSHEEB3V_VvnuwxIDWSqukWoI3tTcqf28YYpKndZEXn3pYj3Q0ueJTDpR6ZT_B8';
 
 // Policy helper function
-const generatePolicy = (principalId, effect, resource) => {
+function generatePolicy(principalId, effect, resource) {
     const authResponse: any = {};
     authResponse.principalId = principalId;
     if (effect && resource) {
@@ -22,17 +22,17 @@ const generatePolicy = (principalId, effect, resource) => {
         authResponse.policyDocument = policyDocument;
     }
     return authResponse;
-};
+}
 
-const createResponse = (statusCode, body) => (
-    {
+function createResponse(statusCode, body) {
+    return {
         statusCode,
         body,
     }
-);
+}
 
 // Reusable Authorizer function, set on `authorizer` field in serverless.yml
-export const auth = (event, context, cb) => {
+export function auth(event, context, cb) {
     if (event.authorizationToken) {
         // remove "bearer " from token
         console.log('event', JSON.stringify(event));
@@ -51,7 +51,7 @@ export const auth = (event, context, cb) => {
     } else {
         cb('[401] Unauthorized');
     }
-};
+}
 
 export async function getAllItems(event, context, callback) {
     console.log('getAllItems', JSON.stringify(event));
