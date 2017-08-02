@@ -115,7 +115,7 @@ functions:
               Access-Control-Allow-Origin: "'*'"
 
   getAllItems:
-    handler: api/auth/handler.getAllItems
+    handler: api/auth/handler.getAllProfiles
     events:
       - http:
           path: api/profile/getAll
