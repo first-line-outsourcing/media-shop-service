@@ -35,7 +35,9 @@ export class Profile {
         };
         console.log('params', params);
         console.log('create profile lambda');
-        return this.db.put(params);
+        return this.db.put(params).promise()
+            .then(() => Promise.resolve(params.Item))
+            .catch((error) => Promise.reject(error));
     }
 
     public get(id: string, social: string) {
