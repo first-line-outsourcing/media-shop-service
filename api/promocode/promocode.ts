@@ -8,14 +8,13 @@ export class Promocode {
     this.db = new DynamoDB.DocumentClient();
   }
 
-  public create(id: string, social: string, persent: number): Promise<any> {
+  public create(id: string, persent: number): Promise<any> {
     const promocode = Promocode.generatePromocode(5);
 
     const params = {
       TableName: process.env.PROMOCODE_TABLE as string,
       Item: {
         id,
-        social,
         promocode,
         persent
       }
@@ -24,12 +23,11 @@ export class Promocode {
     return this.db.put(params).promise();
   }
 
-  public check(id: string, social: string, promocode: string): Promise<number> {
+  public check(id: string, promocode: string): Promise<number> {
     const params = {
       TableName: process.env.PROMOCODE_TABLE as string,
         Key: {
-          id,
-          social
+          id
       }
     };
 
@@ -43,24 +41,22 @@ export class Promocode {
       });
   }
 
-  public get(id: string, social: string): Promise<PromocodeData> {
+  public get(id: string): Promise<PromocodeData> {
     const params = {
       TableName: process.env.PROMOCODE_TABLE as string,
       Key: {
-        id,
-        social
+        id
       }
     };
 
     return this.db.get(params).promise();
   }
 
-  public remove(id: string, social: string): Promise<any> {
+  public remove(id: string): Promise<any> {
     const params = {
       TableName: process.env.PROMOCODE_TABLE as string,
       Key: {
-        id,
-        social
+        id
       }
     };
 
@@ -80,8 +76,7 @@ export class Promocode {
 
 interface PromocodeData {
   Item: {
-    id: string,
-    social: string,
+    id: string
     promocode: string,
     persent: number
   }
