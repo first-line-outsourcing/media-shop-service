@@ -32,7 +32,9 @@ export class Profile {
                 address: userData.address
             },
         };
-        return this.db.put(params);
+        return this.db.put(params).promise()
+            .then(() => Promise.resolve(params.Item))
+            .catch((error) => Promise.reject(error));
     }
 
     public get(id: string, social: string) {
