@@ -1,10 +1,9 @@
 import { CheckBody, CreateBody, Promocode } from './promocode';
 
 export function create(event, context, callback) {
-  const [social, id] = event.principalId.split('|');
+  const id = event.path.id;
 
   console.log('id: ', id);
-  console.log('social: ', social);
 
   const data: CreateBody = event.body;
 
@@ -36,20 +35,19 @@ export function create(event, context, callback) {
 
   const promocode: Promocode = new Promocode();
 
-  promocode.create(id, social, persent)
+  promocode.create(id, persent)
     .then((data) => callback(null, { persent }))
     .catch((err) => {
       console.log('Error, when create promocode: ', err);
       callback(err.statusCode ? `[${err.statusCode}] ${err.message}` :
-        '[500] Internal Server Error (can not create a promocode)');
+        '[500] Server error. Please try later (can not create a promocode)');
     });
 }
 
 export function check(event, context, callback) {
-  const [social, id] = event.principalId.split('|');
+  const id = event.path.id;
 
   console.log('id: ', id);
-  console.log('social: ', social);
 
   const data: CheckBody = event.body;
 
@@ -61,47 +59,45 @@ export function check(event, context, callback) {
 
   const promocode: Promocode = new Promocode();
 
-  promocode.check(id, social, data.promocode)
+  promocode.check(id, data.promocode)
     .then((data) => callback(null, { persent: data }))
     .catch((err) => {
       console.log('Error, when check promocode: ', err);
       callback(err.statusCode ? `[${err.statusCode}] ${err.message}` :
-        '[500] Internal Server Error (can not check a promocode)')
+        '[500] Server error. Please try later (can not check a promocode)')
     });
 }
 
 export function get(event, context, callback) {
-  const [social, id] = event.principalId.split('|');
+  const id = event.path.id;
 
   console.log('id: ', id);
-  console.log('social: ', social);
 
   const promocode: Promocode = new Promocode();
 
-  promocode.get(id, social)
+  promocode.get(id)
     .then((data) => callback(null,
       { promocode: data.Item && data.Item.promocode ? data.Item.promocode : '',
         persent: data.Item && data.Item.persent ? data.Item.persent : 0 }))
     .catch((err) => {
       console.log('Error, when remove promocode: ', err);
       callback(err.statusCode ? `[${err.statusCode}] ${err.message}` :
-        '[500] Internal Server Error (can not get a promocode)');
+        '[500] Server error. Please try later (can not get a promocode)');
     });
 }
 
 export function remove(event, context, callback){
-  const [social, id] = event.principalId.split('|');
+  const id = event.path.id;
 
   console.log('id:', id);
-  console.log('social:', social);
 
   const promocode: Promocode = new Promocode();
-  promocode.remove(id, social)
-    .then(() => callback(null, 'Promocode is deleted'))
+  promocode.remove(id)
+    .then(() => callback(null, { message: 'Promocode is deleted' }))
     .catch((err) => {
       console.log(err);
       callback(err.statusCode ? `[${err.statusCode}] ${err.message}` :
-        '[500] Internal Server Error (can not remove a promocode)');
+        '[500] Server error. Please try later (can not remove a promocode)');
     })
 
 
