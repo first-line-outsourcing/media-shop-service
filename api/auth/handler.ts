@@ -85,22 +85,17 @@ export function updateProfile(event, context, callback) {
 export function createProfile(event, context, callback) {
     console.log('createProfile', event);
     const [social, id] = event.principalId.split('|');
-    try {
-        profile.create(id, social, event.body)
-            .then((data) => {
-                console.log('handler create=', data);
-                callback(null, createResponse(201, data))
-            })
-            .catch((error) => {
-                console.log('create error=', error);
-                if (error.statusCode === 400) {
-                    callback(null, createResponse(400, 'User already exist'))
-                } else {
-                    callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
-                }
-            })
-    }
-    catch (error) {
-        console.log('error', error);
-    }
+    profile.create(id, social, event.body)
+        .then((data) => {
+            console.log('handler create=', data);
+            callback(null, createResponse(201, data))
+        })
+        .catch((error) => {
+            console.log('create error=', error);
+            if (error.statusCode === 400) {
+                callback(null, createResponse(400, 'User already exist'))
+            } else {
+                callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
+            }
+        })
 }
