@@ -1,4 +1,4 @@
-service: bmt-media-shop-service
+service: bmt-media-shop-service-id
 provider:
   name: aws
   runtime: nodejs6.10
@@ -115,7 +115,7 @@ functions:
               Access-Control-Allow-Origin: "'*'"
 
   getAllItems:
-    handler: api/auth/handler.getAllItems
+    handler: api/auth/handler.getAllProfiles
     events:
       - http:
           path: api/profiles

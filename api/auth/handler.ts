@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken');
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
+import { Profile } from './profile';
 
-import db from './db';
+const profile = new Profile();
 
 const AUTH0_CLIENT_ID = 'hfDx6WXS2nkcLUhOcHe0Xq34lZE3wfrH';
 const AUTH0_CLIENT_SECRET = 'wvSHEEB3V_VvnuwxIDWSqukWoI3tTcqf28YYpKndZEXn3pYj3Q0ueJTDpR6ZT_B8';
 
 // Policy helper function
-const generatePolicy = (principalId, effect, resource) => {
+function generatePolicy(principalId, effect, resource) {
   const authResponse: any = {};
   authResponse.principalId = principalId;
   if (effect && resource) {
@@ -22,10 +22,10 @@ const generatePolicy = (principalId, effect, resource) => {
     authResponse.policyDocument = policyDocument;
   }
   return authResponse;
-};
+}
 
 // Reusable Authorizer function, set on `authorizer` field in serverless.yml
-export const auth = (event, context, cb) => {
+export function auth(event, context, cb) {
   if (event.authorizationToken) {
     // remove "bearer " from token
     console.log('event', JSON.stringify(event));
@@ -44,39 +44,36 @@ export const auth = (event, context, cb) => {
   } else {
     cb('[401] Unauthorized');
   }
-};
+}
 
-export async function getAllItems(event, context, callback) {
+export function getAllProfiles(event, context, callback) {
   console.log('getAllItems', JSON.stringify(event));
-  try {
-    const items = await db.getItems();
-    return callback(null, items);
-  } catch (err) {
-    return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later');
-  }
+  profile.getAll()
+    .then((data) => callback(null, data.Items))
+    .catch((error) => callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Server error. Please try later'));
 }
 
-export async function getProfile(event, context, callback) {
+export function getProfile(event, context, callback) {
   console.log('getProfile', JSON.stringify(event));
-  try {
-    const [social, socialId] = event.principalId.split('|');
-    const user = event.body;
-
-    const item = await db.getProfile(socialId, social, user);
-    return callback(null, item);
-  } catch (err) {
-    return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later');
-  }
+  const [social, id] = event.principalId.split('|');
+  const user = event.body;
+  profile.get(id, social, user)
+    .then((data) => {
+      console.log('profile= ', data);
+      callback(null, data);
+    })
+    .catch((error) => {
+      console.log('error= ', error);
+      callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Server error. Please try later');
+    });
 }
 
-export async function updateProfile(event, context, callback) {
+export function updateProfile(event, context, callback) {
   console.log('updateProfile', JSON.stringify(event.body));
-  try {
-    const id = event.path.id;
-    await db.updateProfile(id, event.body.field, event.body.value);
-
-    return callback(null, null);
-  } catch (err) {
-    return callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Server error. Please try later');
-  }
+  const id = event.path.id;
+  profile.update(id, event.body.field, event.body.value)
+    .then(() => callback())
+    .catch((error) => callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Server error. Please try later'));
 }
+
+
