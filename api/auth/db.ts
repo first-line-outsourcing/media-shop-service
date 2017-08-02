@@ -1,6 +1,9 @@
 import * as AWS from 'aws-sdk';
 
-const db = new AWS.DynamoDB.DocumentClient();
+const db = new AWS.DynamoDB.DocumentClient({
+    region: 'localhost',
+    endpoint: 'http://localhost:3000'
+});
 
 const getItems = () =>
     new Promise((resolve, reject) => {

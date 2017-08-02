@@ -1,8 +1,8 @@
 import { Profile } from '../auth/profile';
 import * as AWS from 'aws-sdk';
+import db from './db';
 
 const jwt = require('jsonwebtoken');
-
 const profile = new Profile();
 
 const AUTH0_CLIENT_ID = 'hfDx6WXS2nkcLUhOcHe0Xq34lZE3wfrH';
@@ -87,17 +87,22 @@ export function updateProfile(event, context, callback) {
 export function createProfile(event, context, callback) {
     console.log('createProfile', event);
     const [social, id] = event.principalId.split('|');
-    profile.create(id, social, event.body)
-        .then((data) => {
-            console.log('handler create=', data);
-            callback(null, data.Item)
-        })
-        .catch((error) => {
-            console.log('create error=', error);
-            if (error.statusCode === 400) {
-                callback(null, createResponse(400, 'User already exist'))
-            } else {
-                callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
-            }
-        })
+    try {
+        profile.create(id, social, event.body).promise()
+            .then((data) => {
+                console.log('handler create=', data);
+                callback(null, data.Item)
+            })
+            .catch((error) => {
+                console.log('create error=', error);
+                if (error.statusCode === 400) {
+                    callback(null, createResponse(400, 'User already exist'))
+                } else {
+                    callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error');
+                }
+            })
+    }
+    catch (error) {
+        console.log('error', error);
+    }
 }

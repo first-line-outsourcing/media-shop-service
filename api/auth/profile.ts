@@ -35,11 +35,10 @@ export class Profile {
         };
         console.log('params', params);
         console.log('create profile lambda');
-        return this.db.put(params).promise();
+        return this.db.put(params);
     }
 
     public get(id: string, social: string) {
-        console.log('env =', process.env);
         const params = {
             TableName: process.env.USERS_TABLE as string,
             Key: {
