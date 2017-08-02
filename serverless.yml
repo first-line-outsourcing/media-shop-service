@@ -19,10 +19,6 @@ provider:
           - - "arn:aws:s3:::*"
     - Effect: "Allow"
       Action:
-        - dynamodb:GetRecords
-        - dynamodb:GetShardIterator
-        - dynamodb:DescribeStream
-        - dynamodb:ListStreams
         - dynamodb:DescribeTable
         - dynamodb:Query
         - dynamodb:Scan
@@ -35,6 +31,7 @@ provider:
   environment:
     BUCKET: ${self:service}-templates
     PDF_BUCKET: ${self:service}-pdf
+    REVIEWS_TABLE: ${self:service}-table-reviews
     PROMOCODE_TABLE: ${self:service}-promocode
     USERS_TABLE: ${self:service}-users
 
@@ -115,15 +112,20 @@ functions:
   removePromocode:
     handler: api/promocode/handler.remove
     events:
-      - stream:
-          type: dynamodb
-          arn:
-            Fn::GetAtt:
-              - ItemsTable
-              - StreamArn
+      - http:
+          path: promocode/remove
+          method: delete
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
   getAllItems:
-    handler: api/auth/handler.getAllItems
+    handler: api/auth/handler.getAllProfiles
     events:
       - http:
           path: api/profile/getAll
@@ -195,6 +197,30 @@ functions:
 #              headers:
 #                Access-Control-Allow-Origin: "'*'"
 
+  addReview:
+    handler: api/reviews/handler.add
+    events:
+      - http:
+          path: reviews/add
+          method: post
+          integration: lambda
+          cors: true
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  getReviews:
+      handler: api/reviews/handler.getByProductID
+      events:
+        - http:
+            path: reviews/{productID}
+            method: get
+            integration: lambda
+            cors: true
+            response:
+              headers:
+                Access-Control-Allow-Origin: "'*'"
+
 resources:
   Resources:
     NewResource:
@@ -246,7 +272,25 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         StreamSpecification:
-          StreamViewType: "NEW_AND_OLD_IMAGES"
+          StreamViewType: NEW_AND_OLD_IMAGES
+
+    ReviewsDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.REVIEWS_TABLE}
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
 plugins:
   - serverless-plugin-typescript
   - serverless-dynamodb-local

@@ -29,7 +29,7 @@ export async function receipt(event, context, callback) {
     unlinkSync(tmpFileLocation);
     if (err) {
       console.log(err);
-      return callback(err.statusCode ? `[${err.statusCode}] ${err.message}`: '[500] Internal Server Error');
+      return callback(err.statusCode ? `[${err.statusCode}] ${err.message}`: '[500] Server error. Please try later');
     }
     callback(null, { id: data.id });
   });
