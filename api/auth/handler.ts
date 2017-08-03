@@ -28,6 +28,9 @@ function createResponse(statusCode, body) {
     return {
         statusCode,
         body,
+        headers: {
+            'Access-Control-Allow-Origin': '*', // Required for CORS
+        }
     }
 }
 
@@ -56,7 +59,7 @@ export function auth(event, context, cb) {
 export function getAllProfiles(event, context, callback) {
     console.log('getAllItems', JSON.stringify(event));
     profile.getAll()
-        .then((data) => callback(null, data.Items))
+        .then((data) => callback(null, createResponse(201, data.Items)))
         .catch((error) => callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error'));
 }
 
@@ -66,7 +69,7 @@ export function getProfile(event, context, callback) {
     profile.get(id, social)
         .then((data) => {
             console.log('profile= ', data);
-            callback(null, data.Item);
+            callback(null, createResponse(200, data.Item));
         })
         .catch((error) => {
             console.log('error= ', error);
@@ -78,7 +81,7 @@ export function updateProfile(event, context, callback) {
     console.log('updateProfile', JSON.stringify(event.body));
     const [social, id] = event.principalId.split('|');
     profile.update(id, social, event.body.field, event.body.value)
-        .then(() => callback())
+        .then(() => callback(null, createResponse(200, null)))
         .catch((error) => callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error'));
 }
 
