@@ -288,23 +288,22 @@ resources:
           WriteCapacityUnits: 1
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-          StreamViewType: "NEW_AND_OLD_IMAGES"
 
     OrdersDynamoDb:
           Type: AWS::DynamoDB::Table
           DeletionPolicy: Retain
           Properties:
             AttributeDefinitions:
-              - AttributeName: "id"
-                AttributeType: "S"
+              - AttributeName: id
+                AttributeType: S
             KeySchema:
-              - AttributeName: "id"
-                KeyType: "HASH"
+              - AttributeName: id
+                KeyType: HASH
             ProvisionedThroughput:
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
             StreamSpecification:
-              StreamViewType: "NEW_AND_OLD_IMAGES"
+              StreamViewType: NEW_AND_OLD_IMAGES
             TableName: ${self:provider.environment.ORDERS_TABLE}
 plugins:
   - serverless-plugin-typescript

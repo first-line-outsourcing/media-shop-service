@@ -1,10 +1,6 @@
 import { AdminPanel } from './admin';
 
 export function createOrder (event, context, callback) {
-  const id = event.principalId.split('|')[1];
-
-  console.log('id:', id);
-
   const data = event.body;
 
   console.log('data:', data);
@@ -12,8 +8,8 @@ export function createOrder (event, context, callback) {
   const adminPanel = new AdminPanel();
 
 
-  adminPanel.createOrder(id, data)
-    .then((data) => callback(null))
+  adminPanel.createOrder(data)
+    .then((data) => callback(null,{message: 'Order is successfully created'}))
     .catch((err) => {
       console.log(err);
       callback(err.statusCode ? `[${err.statusCode}] ${err.message}` : '[500] Internal Server Error');
@@ -29,7 +25,6 @@ export function getOrders (event, context, callback) {
 
   adminPanel.getOrders(from, to)
     .then((data) => {
-      console.log('orders =', data);
       callback(null, data)
     })
     .catch((err) => {
@@ -40,13 +35,12 @@ export function getOrders (event, context, callback) {
 }
 
 export function getOrdersByProfile (event, context, callback) {
-  const id = event.principalId.split('|')[1];
+  const id = event.query.id;
 
+  console.log('event:', event);
   console.log('id:', id);
 
   const adminPanel = new AdminPanel();
-
-
   adminPanel.getOrdersByProfile(id)
     .then((data) => callback(null, data))
     .catch((err) => {
