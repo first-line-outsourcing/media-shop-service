@@ -24,7 +24,6 @@
     "@types/mustache": "^0.8.29",
     "@types/node": "^8.0.17",
     "aws-sdk": "^2.92.0",
-    "aws-sdk-mock": "^1.7.0",
     "faker": "^4.1.0",
     "jsonwebtoken": "^7.3.0",
     "mustache": "^2.3.0",

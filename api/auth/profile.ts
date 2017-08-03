@@ -52,6 +52,7 @@ export class Profile {
   }
 
   private create(socialId, social, userData) {
+    console.log('userData=', userData);
     const params = {
       TableName: process.env.USERS_TABLE as string,
       Item: {

@@ -24,12 +24,12 @@ describe('first test', () => {
             });
     });
 
-    xit('first it', (done) => {
+    it('first it', (done) => {
         const datata = {Key: 'Value'};
 
-        AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback) {
-            callback(null, {Item: datata});
-        });
+        // AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback) {
+        //     callback(null, {Item: datata});
+        // });
         new Promise((resolve, reject) => {
             const event = {
                 principalId: 'asasdasd| assdasdassd'
@@ -47,8 +47,3 @@ describe('first test', () => {
         });
     });
 });
-
-AWS.mock('DynamoDB.DocumentClient', 'get', 'message');
-AWS.mock('DynamoDB', 'describeTable', 'message');
-AWS.restore('DynamoDB');
-AWS.restore('DynamoDB.DocumentClient');
