@@ -63,8 +63,8 @@ functions:
     handler: api/promocode/handler.create
     events:
       - http:
-          path: promocode/create
-          method: put
+          path: promocode/{id}
+          method: post
           integration: lambda
           cors: true
           authorizer:
@@ -75,7 +75,7 @@ functions:
       handler: api/promocode/handler.check
       events:
         - http:
-            path: promocode/check
+            path: promocode/{id}
             method: put
             integration: lambda
             cors: true
@@ -87,7 +87,7 @@ functions:
       handler: api/promocode/handler.get
       events:
         - http:
-            path: promocode/get
+            path: promocode/{id}
             method: get
             integration: lambda
             cors: true
@@ -99,7 +99,7 @@ functions:
     handler: api/promocode/handler.remove
     events:
       - http:
-          path: promocode/remove
+          path: promocode/{id}
           method: delete
           integration: lambda
           cors: true
@@ -111,7 +111,7 @@ functions:
     handler: api/auth/handler.getAllProfiles
     events:
       - http:
-          path: api/profile/getAll
+          path: api/profiles
           method: get
           integration: lambda
           cors: true
@@ -123,8 +123,8 @@ functions:
     handler: api/auth/handler.getProfile
     events:
       - http:
-          path: api/profile/get
-          method: get
+          path: api/profile
+          method: post
           integration: lambda
           cors: true
           authorizer:
@@ -135,20 +135,8 @@ functions:
     handler: api/auth/handler.updateProfile
     events:
       - http:
-          method: post
-          path: api/profile/update
-          cors: true
-          integration: lambda
-          authorizer:
-            name: auth
-            resultTtlInSeconds: 0
-
-  createProfile:
-    handler: api/auth/handler.createProfile
-    events:
-      - http:
-          method: post
-          path: api/profile/create
+          method: put
+          path: api/profile/{id}
           cors: true
           integration: lambda
           authorizer:
@@ -157,7 +145,6 @@ functions:
 
   getSelling:
       handler: api/admin.getSelling
-
       events:
         - http:
             path: api/admin/getSelling
@@ -199,37 +186,29 @@ resources:
       Properties:
         AttributeDefinitions:
           -
-            AttributeName: "id"
-            AttributeType: "S"
-          - AttributeName: "social"
-            AttributeType: "S"
+            AttributeName: id
+            AttributeType: S
         KeySchema:
           -
-            AttributeName: "id"
-            KeyType: "HASH"
-          - AttributeName: "social"
-            KeyType: "RANGE"
+            AttributeName: id
+            KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         StreamSpecification:
-          StreamViewType: "NEW_AND_OLD_IMAGES"
+          StreamViewType: NEW_AND_OLD_IMAGES
         TableName: ${self:provider.environment.PROMOCODE_TABLE}
 
     usersTable:
-      Type: "AWS::DynamoDB::Table"
+      Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.USERS_TABLE}
         AttributeDefinitions:
-          - AttributeName: "id"
-            AttributeType: "S"
-          - AttributeName: "social"
-            AttributeType: "S"
+          - AttributeName: id
+            AttributeType: S
         KeySchema:
-          - AttributeName: "id"
-            KeyType: "HASH"
-          - AttributeName: "social"
-            KeyType: "RANGE"
+          - AttributeName: id
+            KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

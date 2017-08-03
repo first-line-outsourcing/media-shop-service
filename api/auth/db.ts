@@ -1,131 +1,146 @@
 import * as AWS from 'aws-sdk';
 
+const uuid = require('uuid');
+
 const db = new AWS.DynamoDB.DocumentClient({
     region: 'localhost',
     endpoint: 'http://localhost:3000'
 });
 
 const getItems = () =>
-    new Promise((resolve, reject) => {
-        const params = {
-            TableName: process.env.USERS_TABLE as string
-        };
+  new Promise((resolve, reject) => {
+    const params = {
+      TableName: process.env.USERS_TABLE as string
+    };
 
-        db.scan(params, (err, data) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve({items: data.Items});
-            }
-        });
+    db.scan(params, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({ items: data.Items });
+      }
     });
+  });
 
-const getProfile = (id, social) =>
-    new Promise((resolve, reject) => {
-        console.log('id', id);
-        const params = {
-            TableName: process.env.USERS_TABLE as string,
-            Key: {
-                id,
-                social
-            },
-        };
+const getProfileByToken = (socialId, social) =>
+  new Promise((resolve, reject) => {
+    console.log('id', socialId);
+    const params = {
+      TableName: process.env.USERS_TABLE as string,
+      FilterExpression: "socialId = :socialId and social = :social",
+      ExpressionAttributeValues: {
+        ":socialId": socialId,
+        ":social": social
+      }
+    };
 
-        db.get(params, (err, data) => {
-            console.log('data', data);
-            if (err) {
-                reject(err);
-            } else if (!data.Item) {
-                reject(new Error(`[404] An item could not be found with id: ${id}`));
-            } else {
-                resolve(data.Item);
-            }
-        });
+    db.scan(params, (err, data) => {
+      console.log('data', data);
+      if (err) {
+        reject(err);
+      } else if (!data.Items || !data.Items.length) {
+        reject({ statusCode: 404, message: `An item could not be found with id: ${socialId}` });
+      } else {
+        resolve(data.Items[0]);
+      }
     });
+  });
 
-const createProfile = (id, social, userData) =>
-    new Promise((resolve, reject) => {
-        const params = {
-            TableName: process.env.USERS_TABLE as string,
-            ConditionExpression: 'attribute_not_exists(id)',
-            Item: {
-                id,
-                social,
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                country: userData.country,
-                currency: userData.currency,
-                name: userData.name,
-                nickName: userData.nickName,
-                orders: userData.orders,
-                picture: userData.picture,
-                address: userData.address
-            },
-        };
-
-        db.put(params, (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(params.Item);
-            }
-        });
+const getProfile = (socialId, social, user) => {
+  return getProfileByToken(socialId, social)
+    .then((data) => Promise.resolve(data))
+    .catch((err) => {
+      if (err.statusCode === 404) {
+        return createProfile(socialId, social, user);
+      }
+      return Promise.reject(err);
     });
+};
 
-const updateProfile = (id, social, field, value) =>
-    new Promise((resolve, reject) => {
-        const params = {
-            TableName: process.env.USERS_TABLE as string,
-            ReturnValues: 'NONE',
-            ConditionExpression: 'attribute_exists(id) AND attribute_exists(social)',
-            UpdateExpression: `SET #field = :value`,
-            Key: {
-                id,
-                social
-            },
-            ExpressionAttributeNames: {
-                '#field': field,
-            },
-            ExpressionAttributeValues: {
-                ':value': value,
-            },
-        };
+const createProfile = (socialId, social, userData) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      TableName: process.env.USERS_TABLE as string,
+      Item: {
+        id: uuid.v1(),
+        socialId,
+        social,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        country: userData.country,
+        currency: userData.currency,
+        name: userData.name,
+        nickName: userData.nickName,
+        orders: userData.orders,
+        picture: userData.picture,
+        address: userData.address
+      },
+    };
 
-        db.update(params, (err) => {
-            if (err) {
-                if (err.code === 'ConditionalCheckFailedException') {
-                    reject(new Error(`[404] An item could not be found with id: ${id}`));
-                } else {
-                    reject(err);
-                }
-            } else {
-                resolve();
-            }
+    db.put(params, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({
+          statusCode: 201,
+          body: params.Item
         });
+      }
     });
+  });
 
-const deleteProfile = (id, social) =>
-    new Promise((resolve, reject) => {
-        const params = {
-            TableName: process.env.USERS_TABLE as string,
-            ConditionExpression: 'attribute_exists(id) AND attribute_exists(social)',
-            Key: {
-                id,
-                social,
-            },
-        };
+const updateProfile = (id, field, value) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      TableName: process.env.USERS_TABLE as string,
+      ReturnValues: 'NONE',
+      ConditionExpression: 'attribute_exists(id)',
+      UpdateExpression: `SET #field = :value`,
+      Key: {
+        id
+      },
+      ExpressionAttributeNames: {
+        '#field': field,
+      },
+      ExpressionAttributeValues: {
+        ':value': value,
+      },
+    };
 
-        db.delete(params, (err) => {
-            if (err) {
-                if (err.code === 'ConditionalCheckFailedException') {
-                    reject(new Error(`[404] An item could not be found with id: ${id}`));
-                } else {
-                    reject(err);
-                }
-            } else {
-                resolve();
-            }
-        });
+    db.update(params, (err) => {
+      if (err) {
+        if (err.code === 'ConditionalCheckFailedException') {
+          reject(new Error(`[404] An item could not be found with id: ${id}`));
+        } else {
+          reject(err);
+        }
+      } else {
+        resolve();
+      }
     });
+  });
 
-export default {getItems, getProfile, createProfile, updateProfile, deleteProfile};
+const deleteProfile = (id) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      TableName: process.env.USERS_TABLE as string,
+      ConditionExpression: 'attribute_exists(id)',
+      Key: {
+        id
+      },
+    };
+
+    db.delete(params, (err) => {
+      if (err) {
+        if (err.code === 'ConditionalCheckFailedException') {
+          reject(new Error(`[404] An item could not be found with id: ${id}`));
+        } else {
+          reject(err);
+        }
+      } else {
+        resolve();
+      }
+    });
+  });
+
+export default { getItems, getProfile, createProfile, updateProfile, deleteProfile };
