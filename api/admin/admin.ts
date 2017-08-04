@@ -46,7 +46,6 @@ export class AdminPanel {
         console.log('data from ordersTable = ', orders);
         orders.Items.forEach((order) => {
           let orderedByProfile = profiles.Items.find((profile) => profile.id === order.orderedBy);
-          console.log(orderedByProfile.firstName);
           order.formProfile.firstName = orderedByProfile.firstName;
           order.formProfile.lastName = orderedByProfile.lastName;
           formedOrders.push(order);
