@@ -33,6 +33,7 @@ provider:
     REVIEWS_TABLE: ${self:service}-table-reviews
     PROMOCODE_TABLE: ${self:service}-promocode
     USERS_TABLE: ${self:service}-users
+    ORDERS_TABLE: ${self:service}-orders
 
 package:
   include:
@@ -159,17 +160,17 @@ functions:
             headers:
               Access-Control-Allow-Origin: "'*'"
 
-  getSelling:
-      handler: api/admin.getSelling
-      events:
-        - http:
-            path: api/admin/getSelling
-            method: get
-            integration: lambda
-            cors: true
-            response:
-              headers:
-                Access-Control-Allow-Origin: "'*'"
+  getOrders:
+    handler: api/admin/handler.getOrders
+    events:
+      - http:
+          path: api/admin/getOrders
+          method: get
+          integration: lambda
+          cors: true
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
 
   addReview:
     handler: api/reviews/handler.add
@@ -191,6 +192,36 @@ functions:
             method: get
             integration: lambda
             cors: true
+            response:
+              headers:
+                Access-Control-Allow-Origin: "'*'"
+
+  createOrder:
+    handler: api/admin/handler.createOrder
+    events:
+      - http:
+          method: post
+          path: api/admin/createOrder
+          cors: true
+          integration: lambda
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+
+  getOrdersByProfile:
+      handler: api/admin/handler.getOrdersByProfile
+      events:
+        - http:
+            method: get
+            path: api/admin/getOrdersByProfile
+            cors: true
+            integration: lambda
+            authorizer:
+              name: auth
+              resultTtlInSeconds: 0
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
@@ -257,5 +288,22 @@ resources:
           WriteCapacityUnits: 1
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
+
+    OrdersDynamoDb:
+          Type: AWS::DynamoDB::Table
+          DeletionPolicy: Retain
+          Properties:
+            AttributeDefinitions:
+              - AttributeName: id
+                AttributeType: S
+            KeySchema:
+              - AttributeName: id
+                KeyType: HASH
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+            StreamSpecification:
+              StreamViewType: NEW_AND_OLD_IMAGES
+            TableName: ${self:provider.environment.ORDERS_TABLE}
 plugins:
   - serverless-plugin-typescript
