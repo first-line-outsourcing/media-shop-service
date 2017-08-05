@@ -1,21 +1,36 @@
 import * as profileFunc from '../api/auth/handler';
 import { expect } from 'chai';
-import * as AWS from 'aws-sdk-mock';
+import * as AWS from 'aws-sdk';
 import * as LT from 'lambda-tester';
 
 describe('first test', () => {
+    before(() => {
+        process.env.USERS_TABLE = 'users-table';
+        process.env.IS_OFFLINE = 'true';
+    });
 
+    after(() => {
+        delete process.env.USERS_TABLE;
+        delete process.env.IS_OFFLINE;
+    });
     it('first it', () => {
         const datata = {Key: 'Value'};
 
-        // AWS.mock('DynamoDB.DocumentClient', 'get', (params, callback) => {
-        //     console.log('params', params);
-        //     callback(null, {Item: datata});
-        // });
-
         return LT(profileFunc.getProfile)
             .event({
-                principalId: 'asasdasd| assdasdassd'
+                principalId: '95851704| vkontakte',
+                body: {
+                    firstName: 'Semyon',
+                    lastName: 'Ermolenko',
+                    address: [],
+                    social: 'vkontakte',
+                    nickName: 'sem.ermolenko',
+                    socialId: '95851704',
+                    currency: '$',
+                    orders: [],
+                    id: 'e26dd4a0-788d-11e7-af16-07f34f74bd2b',
+                    picture: ''
+                }
             })
             .expectResult((result) => {
                 console.log(result);
@@ -24,7 +39,7 @@ describe('first test', () => {
             });
     });
 
-    it('first it', (done) => {
+    xit('first it', (done) => {
         const datata = {Key: 'Value'};
 
         // AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback) {
@@ -32,10 +47,23 @@ describe('first test', () => {
         // });
         new Promise((resolve, reject) => {
             const event = {
-                principalId: 'asasdasd| assdasdassd'
+                principalId: '95851704| vkontakte',
+                body: {
+                    firstName: 'Semyon',
+                    lastName: 'Ermolenko',
+                    address: [],
+                    social: 'vkontakte',
+                    nickName: 'sem.ermolenko',
+                    socialId: '95851704',
+                    currency: '$',
+                    orders: [],
+                    id: 'e26dd4a0-788d-11e7-af16-07f34f74bd2b',
+                    picture: ''
+                }
             };
             const context = {};
             const callback = (ctx, data) => {
+                console.log('data=', data);
                 if (data) {
                     resolve(data);
                     done();
