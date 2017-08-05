@@ -28,7 +28,6 @@
     "jsonwebtoken": "^7.3.0",
     "mustache": "^2.3.0",
     "serverless-dynamodb-local": "^0.2.22",
-    "serverless-plugin-typescript": "^1.0.0",
     "wkhtmltopdf": "^0.3.4"
   }
 }
