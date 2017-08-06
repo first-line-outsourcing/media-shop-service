@@ -28,7 +28,7 @@ function generatePolicy(principalId, effect, resource) {
 export function auth(event, context, cb) {
     if (event.authorizationToken) {
         // remove "bearer " from token
-        console.log('event', JSON.stringify(event));
+        // console.log('event', JSON.stringify(event));
         const token = event.authorizationToken.substring(7);
         const options = {
             audience: AUTH0_CLIENT_ID,
@@ -47,29 +47,29 @@ export function auth(event, context, cb) {
 }
 
 export function getAllProfiles(event, context, callback) {
-    console.log('getAllItems', JSON.stringify(event));
+    // console.log('getAllItems', JSON.stringify(event));
     profile.getAll()
         .then((data) => callback(null, data.Items))
         .catch((error) => callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error'));
 }
 
 export function getProfile(event, context, callback) {
-    console.log('getProfile', JSON.stringify(event));
+    // console.log('getProfile', JSON.stringify(event));
     const [social, id] = event.principalId.split('|');
     const user = event.body;
     profile.get(id, social, user)
         .then((data) => {
-            console.log('profile= ', data);
+            // console.log('profile= ', data);
             callback(null, data);
         })
         .catch((error) => {
-            console.log('error= ', error);
+            // console.log('error= ', error);
             callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Server error. Please try later');
         });
 }
 
 export function updateProfile(event, context, callback) {
-    console.log('updateProfile', JSON.stringify(event.body));
+    // console.log('updateProfile', JSON.stringify(event.body));
     const id = event.path.id;
     profile.update(id, event.body.field, event.body.value)
         .then(() => callback())
