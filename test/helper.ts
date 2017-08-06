@@ -12,7 +12,6 @@ export function removeItemFromTable(tableName, done?) {
     };
     db.scan(params).promise()
         .then((data: any) => {
-            console.log(data);
             if (data.Count === 0) {
                 done();
             }
@@ -31,5 +30,31 @@ export function removeItemFromTable(tableName, done?) {
                         }
                     });
             });
+        });
+}
+
+export function findIdBySocialSocialId(social, socialId, tableName) {
+    const db = new AWS.DynamoDB.DocumentClient({
+        region: 'localhost',
+        endpoint: 'http://localhost:8000/'
+    });
+
+    const params = {
+        TableName: tableName,
+        FilterExpression: 'socialId = :socialId and social = :social',
+        ExpressionAttributeValues: {
+            ':socialId': socialId,
+            ':social': social
+        }
+    };
+    return db.scan(params).promise()
+        .then((data) => {
+            if (!data.Items || !data.Items.length) {
+                return Promise.reject({
+                    statusCode: 404,
+                    message: `An item could not be found with id: ${socialId}`
+                });
+            }
+            return data.Items[0].id;
         });
 }
