@@ -58,7 +58,6 @@ export class Profile {
     }
 
     private create(socialId, social, userData) {
-        console.log('userData=', userData);
         let db;
         if (process.env.IS_OFFLINE) {
             db = new AWS.DynamoDB.DocumentClient({

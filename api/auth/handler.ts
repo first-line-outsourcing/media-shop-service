@@ -47,7 +47,6 @@ export function auth(event, context, cb) {
 }
 
 export function getAllProfiles(event, context, callback) {
-    console.log('getAllItems', JSON.stringify(event));
     profile.getAll()
         .then((data) => callback(null, data.Items))
         .catch((error) => callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Internal Server Error'));
@@ -59,11 +58,9 @@ export function getProfile(event, context, callback) {
     const user = event.body;
     profile.get(id, social, user)
         .then((data) => {
-            // console.log('profile= ', data);
             callback(null, data);
         })
         .catch((error) => {
-            // console.log('error= ', error);
             callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Server error. Please try later');
         });
 }

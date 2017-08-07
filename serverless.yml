@@ -62,7 +62,9 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
             template: $input.json('$')
+
 
   createPromocode:
     handler: api/promocode/handler.create
@@ -78,6 +80,7 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
             template: $input.json('$')
 
 
@@ -95,6 +98,7 @@ functions:
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
+                Content-Type: "'application/json'"
               template: $input.json('$')
 
   getPromocode:
@@ -111,6 +115,7 @@ functions:
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
+                Content-Type: "'application/json'"
               template: $input.json('$')
 
   removePromocode:
@@ -127,6 +132,7 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
             template: $input.json('$')
 
   getAllItems:
@@ -143,6 +149,7 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
             template: $input.json('$')
 
   getProfile:
@@ -159,6 +166,7 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
             template: $input.json('$')
 
   updateProfile:
@@ -175,6 +183,7 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
             template: $input.json('$')
 
   getOrders:
@@ -188,7 +197,8 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
-              template: $input.json('$')
+              Content-Type: "'application/json'"
+            template: $input.json('$')
 
   addReview:
     handler: api/reviews/handler.add
@@ -201,6 +211,7 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
             template: $input.json('$')
 
   getReviews:
@@ -214,6 +225,7 @@ functions:
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
+                Content-Type: "'application/json'"
               template: $input.json('$')
 
   createOrder:
@@ -230,6 +242,8 @@ functions:
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
+            template: $input.json('$')
 
   getOrdersByProfile:
       handler: api/admin/handler.getOrdersByProfile
@@ -245,6 +259,8 @@ functions:
             response:
               headers:
                 Access-Control-Allow-Origin: "'*'"
+                Content-Type: "'application/json'"
+              template: $input.json('$')
 
 resources:
   Resources:

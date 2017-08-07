@@ -1,19 +1,20 @@
 import * as profileFunc from '../api/auth/handler';
 import { expect } from 'chai';
 import * as LT from 'lambda-tester';
-import { removeItemFromTable, findIdBySocialSocialId } from './helper';
-
-const demoProfile = {
-    firstName: 'Semyon',
-    lastName: 'Ermolenko',
-    social: 'vkontakte',
-    nickName: 'sem.ermolenko',
-    socialId: '95851704',
-    currency: '$',
-    picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4'
-};
+import { removeItemFromTable } from './helper';
 
 describe('checking add and get profile in db', () => {
+
+    const demoProfile = {
+        firstName: 'Semyon',
+        lastName: 'Ermolenko',
+        social: 'vkontakte',
+        nickName: 'sem.ermolenko',
+        socialId: '95851704',
+        currency: '$',
+        picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4'
+    };
+
     before((done) => {
         process.env.USERS_TABLE = 'bmt-media-shop-service-users';
         process.env.IS_OFFLINE = 'true';
@@ -112,6 +113,15 @@ describe(`getting all items from db`, () => {
 });
 
 describe(`update profile`, () => {
+    const profile: any = {
+        firstName: 'Semyon',
+        lastName: 'Ermolenko',
+        social: 'vkontakte',
+        nickName: 'sem.ermolenko',
+        socialId: '95851704',
+        currency: '$',
+        picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4'
+    };
     before((done) => {
         process.env.USERS_TABLE = 'bmt-media-shop-service-users';
         process.env.IS_OFFLINE = 'true';
@@ -123,43 +133,58 @@ describe(`update profile`, () => {
         delete process.env.IS_OFFLINE;
     });
 
-    it('create profile', () => {
+    it('create profile before update', () => {
         return LT(profileFunc.getProfile)
             .event({
                 principalId: 'vkontakte|95851704',
-                body: demoProfile
+                body: profile
             })
             .expectResult((result) => {
-                delete result.body.id;
+                profile['id'] = result.body.id;
                 expect(result.body).to.exist;
                 for (const key of Object.keys(result.body)) {
-                    expect(result.body[key]).to.equal(demoProfile[key]);
+                    expect(result.body[key]).to.equal(profile[key]);
                 }
             });
     });
 
     it(`when update profile`, () => {
-        const tmpProfile = {
-            firstName: 'Egor',
-            lastName: 'Naviznev',
-            social: 'vkontakte',
-            nickName: 'sem.ermolenko',
-            socialId: '95851704',
-            currency: '$',
-            picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4'
-        };
-        return LT(profileFunc.updateProfile)
+        profile.firstName = 'Egor';
+        LT(profileFunc.updateProfile)
             .event({
                 principalId: 'vkontakte|95851704',
-                body: tmpProfile
-            })
-            .expectResult((result) => {
-                console.log(result);
-                delete result.id;
-                expect(result).to.exist;
-                for (const key of Object.keys(result.body)) {
-                    expect(result.body[key]).to.equal(tmpProfile[key]);
+                body: {
+                    field: 'firstName',
+                    value: 'Egor'
+                },
+                path: {
+                    id: profile.id
                 }
+            })
+            .expectResult(() => {
+                return LT(profileFunc.getProfile)
+                    .event({principalId: 'vkontakte|95851704'})
+                    .expectResult((result) => {
+                        expect(result.body).to.exist;
+                        for (const key of Object.keys(result.body)) {
+                            expect(result.body[key]).to.equal(profile[key]);
+                        }
+                    });
             });
+    });
+
+    it(`when update profile and path.id is bad`, () => {
+        LT(profileFunc.updateProfile)
+            .event({
+                principalId: 'vkontakte|95851704',
+                body: {
+                    field: 'firstName',
+                    value: 'Egor'
+                },
+                path: {
+                    id: 'blablabla'
+                }
+            })
+            .expectError();
     })
 });
