@@ -93,6 +93,16 @@ describe('checking add and get profile in db', () => {
             })
             .expectError();
     });
+
+    it('when get profile and db is off', () => {
+        delete process.env.IS_OFFLINE;
+        return LT(profileFunc.getProfile)
+            .event({
+                principalId: 'vkontakte',
+                body: demoProfile
+            })
+            .expectError();
+    });
 });
 
 describe(`getting all items from db`, () => {
@@ -108,7 +118,17 @@ describe(`getting all items from db`, () => {
 
     it('getting all items', () => {
         return LT(profileFunc.getAllProfiles)
-            .expectResult();
+            .expectResult((res) => {
+                expect(res).to.exist;
+            });
+    });
+
+    it('getting all items but db is off', () => {
+        delete process.env.IS_OFFLINE;
+        return LT(profileFunc.getAllProfiles)
+            .expectError((err) => {
+                console.log(err);
+            });
     });
 });
 
@@ -150,7 +170,7 @@ describe(`update profile`, () => {
 
     it(`when update profile`, () => {
         profile.firstName = 'Egor';
-        LT(profileFunc.updateProfile)
+        return LT(profileFunc.updateProfile)
             .event({
                 principalId: 'vkontakte|95851704',
                 body: {
@@ -165,16 +185,16 @@ describe(`update profile`, () => {
                 return LT(profileFunc.getProfile)
                     .event({principalId: 'vkontakte|95851704'})
                     .expectResult((result) => {
-                        expect(result.body).to.exist;
-                        for (const key of Object.keys(result.body)) {
-                            expect(result.body[key]).to.equal(profile[key]);
+                        expect(result).to.exist;
+                        for (const key of Object.keys(result)) {
+                            expect(result[key]).to.equal(profile[key]);
                         }
                     });
             });
     });
 
     it(`when update profile and path.id is bad`, () => {
-        LT(profileFunc.updateProfile)
+        return LT(profileFunc.updateProfile)
             .event({
                 principalId: 'vkontakte|95851704',
                 body: {
@@ -186,5 +206,36 @@ describe(`update profile`, () => {
                 }
             })
             .expectError();
-    })
+    });
+
+    it(`when update profile and value field is empty`, () => {
+        return LT(profileFunc.updateProfile)
+            .event({
+                principalId: 'vkontakte|95851704',
+                body: {
+                    field: 'firstName',
+                    value: ''
+                },
+                path: {
+                    id: profile.id
+                }
+            })
+            .expectError();
+    });
+
+    it('when update profile and db is off', () => {
+        delete process.env.IS_OFFLINE;
+        return LT(profileFunc.updateProfile)
+            .event({
+                principalId: 'vkontakte',
+                body: {
+                    field: 'firstName',
+                    value: 'Egor'
+                },
+                path: {
+                    id: profile.id
+                }
+            })
+            .expectError();
+    });
 });

@@ -49,7 +49,7 @@ custom:
 
 functions:
   auth:
-    handler: api/auth/handler.auth
+    handler: api/auth/authorization.auth
 
   print:
     handler: api/print.receipt
