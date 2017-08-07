@@ -16,7 +16,7 @@
 
 2. Запускаем serverless-offline с помощью команды `sls offline start`. Автоматичски будет запущена БД и serverless-offline.
 
-3. С помощью комманды `npm test` будут запущены unit тесты и представлен отчет о покрытии кода тестами.
+3. С помощью комманды `npm test` будут запущены unit тесты и предоставлен отчет о покрытии кода тестами.
 
 # Руководство для написания тестов
 
@@ -30,6 +30,19 @@ it(`my first test`, () => {
     return lambdaTester(myFunc)
             .event(...)
 });
+```
+- В данному случае ожидается, что функция сработает как надо и вернется результат, в теле которого проверяются те, или иные значение/свойства/поля объекта/переменной, использую `expect`, `assert` or `should`.
+```
+return lambdaTester(myFunc)
+            .event(...)
+            .expectResult();
+```
+
+- В данному случае ожидается, что функция сработает с ошибкой и ожидается именно она, благодаря `.expectError`, в теле которого проверяются те, или иные значение/свойства/поля объекта/переменной, использую `expect`, `assert` or `should`.
+```
+return lambdaTester(myFunc)
+            .event(...)
+            .expectError();
 ```
 
 # Использованные пакеты для написания тестов
@@ -52,7 +65,7 @@ Error: spawn java ENOENT
 
 - данная ошибка возникает, если работа serverless-offline была завершена не правильно. Решается путем убивания процесса, который отвечает за работа dynamoDB-local.
 ```
-WARN:oejuc.AbstractLifeCycle:FAILED SelectChannelConnector@0.0.0.0:8000: java.net.BindException: Адрес уже используется
+WARN:oejuc.AbstractLifeCycle:FAILED SelectChannelConnector@0.0.0.0:8000:
 java.net.BindException: Адрес уже используется
  ```
 
