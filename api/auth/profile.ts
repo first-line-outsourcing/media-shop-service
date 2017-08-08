@@ -3,9 +3,6 @@ import * as AWS from 'aws-sdk';
 const uuid = require('uuid');
 
 export class Profile {
-    constructor() {
-
-    }
 
     public get (socialId: string, social: string, user) {
         return this.getByToken(socialId, social)
