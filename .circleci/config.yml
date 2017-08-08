@@ -25,15 +25,14 @@ jobs:
       - run: sudo typings install dt~mocha --global --save
       - run: sudo typings install npm~chai --save
       - run: sls dynamodb install
-      - run:
-          name: Start serverless-offline
-          command: sls offline start
-          background: true
-
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Start serverless-offline
+          command: sls offline start
+          background: true
 
   test:
     docker:
@@ -43,8 +42,8 @@ jobs:
 
     steps:
       - run:
-        name: Run tests!
-        command: npm test
+          name: Run tests!
+          command: npm test
 
 workflows:
   version: 2
