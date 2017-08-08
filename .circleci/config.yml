@@ -29,7 +29,7 @@ jobs:
       - run: npm install -q
       - run: sudo npm install mocha chai ts-node typings -g -q
       - run: sudo typings install dt~mocha --global --save
-      - run: typings install npm~chai --save
+      - run: sudo typings install npm~chai --save
       - run: sls dynamodb install
       - run: sls offline start
 
