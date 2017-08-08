@@ -24,7 +24,7 @@ export class Profile {
         //     db = new AWS.DynamoDB.DocumentClient();
         // }
         const params = {
-            TableName: process.env.USERS_TABLE as string | 'bmt-media-shop-service-users',
+            TableName: 'bmt-media-shop-service-users',
             ReturnValues: 'NONE',
             ConditionExpression: 'attribute_exists(id)',
             UpdateExpression: `SET #field = :value`,
@@ -52,7 +52,7 @@ export class Profile {
         //     db = new AWS.DynamoDB.DocumentClient();
         // }
         const params = {
-            TableName: process.env.USERS_TABLE as string | 'bmt-media-shop-service-users'
+            TableName: 'bmt-media-shop-service-users'
         };
         return db.scan(params).promise();
     }
@@ -68,7 +68,7 @@ export class Profile {
         //     db = new AWS.DynamoDB.DocumentClient();
         // }
         const params = {
-            TableName: process.env.USERS_TABLE as string | 'bmt-media-shop-service-users',
+            TableName: 'bmt-media-shop-service-users',
             Item: {
                 id: uuid.v1(),
                 socialId,
@@ -100,7 +100,7 @@ export class Profile {
         //     db = new AWS.DynamoDB.DocumentClient();
         // }
         const params = {
-            TableName: process.env.USERS_TABLE as string | 'bmt-media-shop-service-users',
+            TableName: 'bmt-media-shop-service-users',
             FilterExpression: 'socialId = :socialId and social = :social',
             ExpressionAttributeValues: {
                 ':socialId': socialId,
