@@ -5,7 +5,7 @@
   "main": "handler.js",
   "scripts": {
     "start": "sls deploy",
-    "test": "nyc mocha --timeout 15000 test/*.spec.ts",
+    "test": "nyc mocha test/*.spec.ts",
     "serverless-offline": "sls offline start"
   },
   "nyc": {

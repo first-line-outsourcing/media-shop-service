@@ -16,14 +16,14 @@ describe('checking add and get profile in db', () => {
     };
 
     before((done) => {
-        // process.env.USERS_TABLE = 'bmt-media-shop-service-users';
-        // process.env.IS_OFFLINE = 'true';
-        removeItemFromTable('bmt-media-shop-service-users', done);
+        process.env.USERS_TABLE = 'bmt-media-shop-service-users';
+        process.env.IS_OFFLINE = 'true';
+        removeItemFromTable(process.env.USERS_TABLE, done);
     });
 
     after(() => {
-        // delete process.env.USERS_TABLE;
-        // delete process.env.IS_OFFLINE;
+        delete process.env.USERS_TABLE;
+        delete process.env.IS_OFFLINE;
     });
 
     it('when create profile with empty field', () => {
@@ -95,7 +95,7 @@ describe('checking add and get profile in db', () => {
     });
 
     it('when get profile and db is off', () => {
-        //delete process.env.IS_OFFLINE;
+        delete process.env.IS_OFFLINE;
         return LT(profileFunc.getProfile)
             .event({
                 principalId: 'vkontakte',
@@ -107,13 +107,13 @@ describe('checking add and get profile in db', () => {
 
 describe(`getting all items from db`, () => {
     before(() => {
-        // process.env.USERS_TABLE = 'bmt-media-shop-service-users';
-        // process.env.IS_OFFLINE = 'true';
+        process.env.USERS_TABLE = 'bmt-media-shop-service-users';
+        process.env.IS_OFFLINE = 'true';
     });
 
     after(() => {
-        // delete process.env.USERS_TABLE;
-        // delete process.env.IS_OFFLINE;
+        delete process.env.USERS_TABLE;
+        delete process.env.IS_OFFLINE;
     });
 
     it('getting all items', () => {
@@ -124,7 +124,7 @@ describe(`getting all items from db`, () => {
     });
 
     it('getting all items but db is off', () => {
-        // delete process.env.IS_OFFLINE;
+        delete process.env.IS_OFFLINE;
         return LT(profileFunc.getAllProfiles)
             .expectError();
     });
@@ -141,14 +141,14 @@ describe(`update profile`, () => {
         picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4'
     };
     before((done) => {
-        // process.env.USERS_TABLE = 'bmt-media-shop-service-users';
-        // process.env.IS_OFFLINE = 'true';
-        removeItemFromTable('bmt-media-shop-service-users', done);
+        process.env.USERS_TABLE = 'bmt-media-shop-service-users';
+        process.env.IS_OFFLINE = 'true';
+        removeItemFromTable(process.env.USERS_TABLE, done);
     });
 
     after(() => {
-        // delete process.env.USERS_TABLE;
-        // delete process.env.IS_OFFLINE;
+        delete process.env.USERS_TABLE;
+        delete process.env.IS_OFFLINE;
     });
 
     it('create profile before update', () => {
@@ -222,7 +222,7 @@ describe(`update profile`, () => {
     });
 
     it('when update profile and db is off', () => {
-        // delete process.env.IS_OFFLINE;
+        delete process.env.IS_OFFLINE;
         return LT(profileFunc.updateProfile)
             .event({
                 principalId: 'vkontakte',
