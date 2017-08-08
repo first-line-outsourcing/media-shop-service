@@ -31,9 +31,7 @@ jobs:
       - run: sudo typings install dt~mocha --global --save
       - run: sudo typings install npm~chai --save
       - run: sls dynamodb install
-      - run:
-          command: sls offline start
-          background: true
+      - run: sls offline start
 
       - save_cache:
           paths:
@@ -41,6 +39,8 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: npm test
+      - run:
+          command: npm test
+          background: true
 
 
