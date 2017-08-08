@@ -110,7 +110,7 @@ export class Profile {
 
         return db.scan(params).promise()
             .then((data) => {
-                if (!data.Items || !data.Items.length) {
+                if (data.Count === 0) {
                     return Promise.reject({
                         statusCode: 404,
                         message: `An item could not be found with id: ${socialId}`
