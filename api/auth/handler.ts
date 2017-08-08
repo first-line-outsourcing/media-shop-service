@@ -28,5 +28,3 @@ export function updateProfile(event, context, callback) {
         .then(() => callback())
         .catch((error) => callback(error.statusCode ? `[${error.statusCode}] ${error.message}` : '[500] Server error. Please try later'));
 }
-
-
