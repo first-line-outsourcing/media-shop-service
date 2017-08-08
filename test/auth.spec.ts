@@ -124,7 +124,7 @@ describe(`getting all items from db`, () => {
     });
 
     it('getting all items but db is off', () => {
-        delete process.env.IS_OFFLINE;
+        // delete process.env.IS_OFFLINE;
         return LT(profileFunc.getAllProfiles)
             .expectError();
     });
@@ -222,7 +222,7 @@ describe(`update profile`, () => {
     });
 
     it('when update profile and db is off', () => {
-        delete process.env.IS_OFFLINE;
+        // delete process.env.IS_OFFLINE;
         return LT(profileFunc.updateProfile)
             .event({
                 principalId: 'vkontakte',
