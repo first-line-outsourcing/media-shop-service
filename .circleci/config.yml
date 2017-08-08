@@ -26,9 +26,9 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install
-      - run: npm install mocha chai ts-node typings -g
-      - run: typings install dt~mocha --global --save
+      - run: npm install -q
+      - run: sudo npm install mocha chai ts-node typings -g -q
+      - run: sudo typings install dt~mocha --global --save
       - run: typings install npm~chai --save
       - run: sls dynamodb install
       - run: sls offline start
