@@ -1,4 +1,4 @@
-service: bmt-media-shop-service-unit-test
+service: bmt-media-shop-service
 
 provider:
   name: aws

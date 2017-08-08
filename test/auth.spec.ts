@@ -126,9 +126,7 @@ describe(`getting all items from db`, () => {
     it('getting all items but db is off', () => {
         delete process.env.IS_OFFLINE;
         return LT(profileFunc.getAllProfiles)
-            .expectError((err) => {
-                console.log(err);
-            });
+            .expectError();
     });
 });
 
