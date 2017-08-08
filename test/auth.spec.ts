@@ -18,7 +18,7 @@ describe('checking add and get profile in db', () => {
     before((done) => {
         // process.env.USERS_TABLE = 'bmt-media-shop-service-users';
         // process.env.IS_OFFLINE = 'true';
-        removeItemFromTable(process.env.USERS_TABLE, done);
+        removeItemFromTable('bmt-media-shop-service-users', done);
     });
 
     after(() => {
@@ -143,7 +143,7 @@ describe(`update profile`, () => {
     before((done) => {
         // process.env.USERS_TABLE = 'bmt-media-shop-service-users';
         // process.env.IS_OFFLINE = 'true';
-        removeItemFromTable(process.env.USERS_TABLE, done);
+        removeItemFromTable('bmt-media-shop-service-users', done);
     });
 
     after(() => {
