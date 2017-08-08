@@ -1,10 +1,10 @@
-# Настройки окружения для запуска unit-tests.
+# Настройкa окружения для запуска unit-tests.
 
 1. Проверьте, что на вашем компьютере установлена JRE. Проверить это можно с помощью комманды `java --version`.
 
-2. Запусть `npm i`.
+2. Удостовериться, что стоит Node.js версии >=6.10.1 и <7.x.x.
 
-3. Удостовериться, что стоит Node.js версии >=6.10.1 и <7.x.x.
+3. Запусть `npm i`.
 
 4. Глобально установить [mocha](https://github.com/mochajs/mocha), [chai](https://github.com/chaijs/chai), [ts-node](https://github.com/TypeStrong/ts-node), [typings](https://github.com/typings/typings) с помощью комманды `npm install mocha chai ts-node typings -g`.
 
@@ -14,7 +14,7 @@
 
 1. С помощью команды `sls dynamodb install` следует установить локально базу данных.
 
-2. Запускаем serverless-offline с помощью команды `sls offline start`. Автоматичски будет запущена БД и serverless-offline.
+2. Запускаем serverless-offline с помощью команды `sls offline start`. Автоматически будут запущены БД, S3 и serverless-offline.
 
 3. С помощью комманды `npm test` будут запущены unit тесты и предоставлен отчет о покрытии кода тестами.
 
@@ -49,13 +49,14 @@ return lambdaTester(myFunc)
 
 - [serverless-offline](https://github.com/dherault/serverless-offline)
 - [serverless-dynamodb-local](https://github.com/99xt/serverless-dynamodb-local)
+- [serverless-s3-local](https://github.com/ar90n/serverless-s3-local)
 - [lambda-tester](https://github.com/vandium-io/lambda-tester)
 - [istanbuljs](https://github.com/istanbuljs/istanbuljs)
 - [chai](https://github.com/chaijs/chai)
 
 # Возможные проблемы
 
-- данная ошибка возникает, если не установлен JRE, либо забыли установить БД локально - решается с помощью команды`sls dynamodb install`
+- данная ошибка возникает, если не установлена JRE, либо забыли установить БД локально - решается с помощью команды`sls dynamodb install`
 ```
 events.js:160
       throw er; // Unhandled 'error' event

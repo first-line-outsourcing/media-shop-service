@@ -1,4 +1,4 @@
-service: bmt-media-shop-service
+service: bmt-media-shop-service-unit-test
 
 provider:
   name: aws
@@ -46,6 +46,10 @@ custom:
       port: 8000
       inMemory: true
       migrate: true
+  s3:
+    port: 8800
+    directory: /tmp
+    cors: true
 
 functions:
   auth:
@@ -344,4 +348,5 @@ resources:
 plugins:
   - serverless-plugin-typescript
   - serverless-dynamodb-local
+  - serverless-s3-local
   - serverless-offline
