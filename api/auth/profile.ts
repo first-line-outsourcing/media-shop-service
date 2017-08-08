@@ -3,7 +3,14 @@ import * as AWS from 'aws-sdk';
 const uuid = require('uuid');
 
 export class Profile {
-    public get(socialId: string, social: string, user) {
+    constructor() {
+        AWS.config.update({
+            accessKeyId: 'YOURKEY',
+            secretAccessKey: 'YOURSECRET'
+        });
+    }
+
+    public get (socialId: string, social: string, user) {
         return this.getByToken(socialId, social)
             .catch((error) => {
                 if (error.statusCode === 404) {
@@ -16,10 +23,10 @@ export class Profile {
     public update(id, field, value) {
         let db;
         // if (process.env.IS_OFFLINE) {
-            db = new AWS.DynamoDB.DocumentClient({
-                region: 'localhost',
-                endpoint: 'http://localhost:8000/'
-            });
+        db = new AWS.DynamoDB.DocumentClient({
+            region: 'localhost',
+            endpoint: 'http://localhost:8000/'
+        });
         // } else {
         //     db = new AWS.DynamoDB.DocumentClient();
         // }
@@ -44,10 +51,10 @@ export class Profile {
     public getAll() {
         let db;
         // if (process.env.IS_OFFLINE) {
-            db = new AWS.DynamoDB.DocumentClient({
-                region: 'localhost',
-                endpoint: 'http://localhost:8000/'
-            });
+        db = new AWS.DynamoDB.DocumentClient({
+            region: 'localhost',
+            endpoint: 'http://localhost:8000/'
+        });
         // } else {
         //     db = new AWS.DynamoDB.DocumentClient();
         // }
@@ -60,10 +67,10 @@ export class Profile {
     private create(socialId, social, userData) {
         let db;
         // if (process.env.IS_OFFLINE) {
-            db = new AWS.DynamoDB.DocumentClient({
-                region: 'localhost',
-                endpoint: 'http://localhost:8000/'
-            });
+        db = new AWS.DynamoDB.DocumentClient({
+            region: 'localhost',
+            endpoint: 'http://localhost:8000/'
+        });
         // } else {
         //     db = new AWS.DynamoDB.DocumentClient();
         // }
@@ -92,10 +99,10 @@ export class Profile {
     private getByToken(socialId: string, social: string) {
         let db;
         // if (process.env.IS_OFFLINE) {
-            db = new AWS.DynamoDB.DocumentClient({
-                region: 'localhost',
-                endpoint: 'http://localhost:8000/'
-            });
+        db = new AWS.DynamoDB.DocumentClient({
+            region: 'localhost',
+            endpoint: 'http://localhost:8000/'
+        });
         // } else {
         //     db = new AWS.DynamoDB.DocumentClient();
         // }
