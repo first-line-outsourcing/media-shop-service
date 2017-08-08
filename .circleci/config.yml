@@ -33,6 +33,7 @@ jobs:
           name: Start serverless-offline
           command: sls offline start
           background: true
+      - run: sleep 500
       - run:
           name: Run tests!
           command: npm test
