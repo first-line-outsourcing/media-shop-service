@@ -32,6 +32,7 @@ jobs:
       - run: sudo typings install npm~chai --save
       - run: sls dynamodb install
       - run:
+          name: Start serverless-offline
           command: sls offline start
           background: true
 
@@ -39,8 +40,9 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - setup_remote_docker
-      # run tests!
-      - run: npm test
+
+      - run:
+          name: Run tests!
+          command: npm test
 
 
