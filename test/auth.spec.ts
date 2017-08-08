@@ -1,8 +1,9 @@
 import * as profileFunc from '../api/auth/handler';
 import { expect } from 'chai';
 import * as LT from 'lambda-tester';
-import { removeItemFromTable } from './helper';
+import { HelperForTests } from './helper';
 
+const HFT = new HelperForTests();
 describe('checking add and get profile in db', () => {
 
     const demoProfile = {
@@ -18,7 +19,7 @@ describe('checking add and get profile in db', () => {
     before((done) => {
         process.env.USERS_TABLE = 'bmt-media-shop-service-users';
         process.env.IS_OFFLINE = 'true';
-        removeItemFromTable(process.env.USERS_TABLE, done);
+        HFT.removeItemFromTable(process.env.USERS_TABLE, done);
     });
 
     after(() => {
@@ -143,7 +144,7 @@ describe(`update profile`, () => {
     before((done) => {
         process.env.USERS_TABLE = 'bmt-media-shop-service-users';
         process.env.IS_OFFLINE = 'true';
-        removeItemFromTable(process.env.USERS_TABLE, done);
+        HFT.removeItemFromTable(process.env.USERS_TABLE, done);
     });
 
     after(() => {

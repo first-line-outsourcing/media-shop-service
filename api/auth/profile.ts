@@ -4,10 +4,7 @@ const uuid = require('uuid');
 
 export class Profile {
     constructor() {
-        AWS.config.update({
-            accessKeyId: 'YOURKEY',
-            secretAccessKey: 'YOURSECRET'
-        });
+
     }
 
     public get (socialId: string, social: string, user) {
