@@ -15,16 +15,16 @@ export class Profile {
 
     public update(id, field, value) {
         let db;
-        if (process.env.IS_OFFLINE) {
+        // if (process.env.IS_OFFLINE) {
             db = new AWS.DynamoDB.DocumentClient({
                 region: 'localhost',
                 endpoint: 'http://localhost:8000/'
             });
-        } else {
-            db = new AWS.DynamoDB.DocumentClient();
-        }
+        // } else {
+        //     db = new AWS.DynamoDB.DocumentClient();
+        // }
         const params = {
-            TableName: process.env.USERS_TABLE as string,
+            TableName: process.env.USERS_TABLE as string | 'bmt-media-shop-service-users',
             ReturnValues: 'NONE',
             ConditionExpression: 'attribute_exists(id)',
             UpdateExpression: `SET #field = :value`,
@@ -43,32 +43,32 @@ export class Profile {
 
     public getAll() {
         let db;
-        if (process.env.IS_OFFLINE) {
+        // if (process.env.IS_OFFLINE) {
             db = new AWS.DynamoDB.DocumentClient({
                 region: 'localhost',
                 endpoint: 'http://localhost:8000/'
             });
-        } else {
-            db = new AWS.DynamoDB.DocumentClient();
-        }
+        // } else {
+        //     db = new AWS.DynamoDB.DocumentClient();
+        // }
         const params = {
-            TableName: process.env.USERS_TABLE as string
+            TableName: process.env.USERS_TABLE as string | 'bmt-media-shop-service-users'
         };
         return db.scan(params).promise();
     }
 
     private create(socialId, social, userData) {
         let db;
-        if (process.env.IS_OFFLINE) {
+        // if (process.env.IS_OFFLINE) {
             db = new AWS.DynamoDB.DocumentClient({
                 region: 'localhost',
                 endpoint: 'http://localhost:8000/'
             });
-        } else {
-            db = new AWS.DynamoDB.DocumentClient();
-        }
+        // } else {
+        //     db = new AWS.DynamoDB.DocumentClient();
+        // }
         const params = {
-            TableName: process.env.USERS_TABLE as string,
+            TableName: process.env.USERS_TABLE as string | 'bmt-media-shop-service-users',
             Item: {
                 id: uuid.v1(),
                 socialId,
@@ -91,16 +91,16 @@ export class Profile {
 
     private getByToken(socialId: string, social: string) {
         let db;
-        if (process.env.IS_OFFLINE) {
+        // if (process.env.IS_OFFLINE) {
             db = new AWS.DynamoDB.DocumentClient({
                 region: 'localhost',
                 endpoint: 'http://localhost:8000/'
             });
-        } else {
-            db = new AWS.DynamoDB.DocumentClient();
-        }
+        // } else {
+        //     db = new AWS.DynamoDB.DocumentClient();
+        // }
         const params = {
-            TableName: process.env.USERS_TABLE as string,
+            TableName: process.env.USERS_TABLE as string | 'bmt-media-shop-service-users',
             FilterExpression: 'socialId = :socialId and social = :social',
             ExpressionAttributeValues: {
                 ':socialId': socialId,
