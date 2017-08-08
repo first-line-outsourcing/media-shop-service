@@ -34,7 +34,7 @@ jobs:
       - run:
           command: sls offline start
           background: true
-          when: on_success
+      - sleep: 50
 
       - save_cache:
           paths:
