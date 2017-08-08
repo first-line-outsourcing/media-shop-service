@@ -6,7 +6,7 @@
   "scripts": {
     "start": "sls deploy",
     "test": "nyc mocha --timeout 5000 test/*.spec.ts",
-    "serverless-offline": "sls offline start"
+    "serverless-offline": "sls offline start --noAuth"
   },
   "nyc": {
     "watermarks": {
