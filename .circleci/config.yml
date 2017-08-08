@@ -32,8 +32,8 @@ jobs:
       - run: sudo typings install npm~chai --save
       - run: sls dynamodb install
       - run:
-        command: sls offline start
-        background: true
+          command: sls offline start
+          background: true
 
       - save_cache:
           paths:
