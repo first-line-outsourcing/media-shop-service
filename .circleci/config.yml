@@ -32,23 +32,7 @@ jobs:
       - run:
           name: Start serverless-offline
           command: sls offline start
-
-  test:
-    docker:
-      - image: circleci/node:6.10.3
-
-    working_directory: ~/repo
-
-    steps:
+          background: true
       - run:
           name: Run tests!
           command: npm test
-
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
