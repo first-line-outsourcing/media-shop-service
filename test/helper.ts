@@ -12,6 +12,7 @@ export function removeItemFromTable(tableName, done?) {
     };
     db.scan(params).promise()
         .then((data: any) => {
+            console.log('data=', data);
             if (data.Count === 0) {
                 done();
             }
