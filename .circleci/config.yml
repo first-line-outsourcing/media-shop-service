@@ -32,7 +32,6 @@ jobs:
       - run:
           name: Start serverless-offline
           command: sls offline start
-          background: true
 
   test:
     docker:
