@@ -39,7 +39,7 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - timeout: 5000
+      - setup_remote_docker
       # run tests!
       - run: npm test
 
