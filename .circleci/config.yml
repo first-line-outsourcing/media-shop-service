@@ -31,7 +31,7 @@ jobs:
       - run: sudo typings install dt~mocha --global --save
       - run: sudo typings install npm~chai --save
       - run: sls dynamodb install
-      - run: sls offline start
+      - run: sls offline start && npm test
 
       - save_cache:
           paths:
