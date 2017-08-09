@@ -45,6 +45,10 @@ return lambdaTester(myFunc)
             .expectError();
 ```
 
+## Покрытие тестами
+
+- Чтобы тесты прошли, необходимо, чтобы тесты покрывали минимум 85% кода, функций и различных ответвлений, при использовании оператора `if else` или тернарного оператора `условие ? выражение1 : выражение2`
+
 # Использованные пакеты для написания тестов
 
 - [serverless-offline](https://github.com/dherault/serverless-offline)
@@ -64,7 +68,7 @@ events.js:160
 Error: spawn java ENOENT
 ```
 
-- данная ошибка возникает, если работа serverless-offline была завершена не правильно. Решается путем убивания процесса, который отвечает за работа dynamoDB-local.
+- данная ошибка возникает, если работа serverless-offline была завершена не правильно и процеесс работы dynamoDB находится еще в памяти. Решается путем убивания процесса, который отвечает за работа dynamoDB-local.
 ```
 WARN:oejuc.AbstractLifeCycle:FAILED SelectChannelConnector@0.0.0.0:8000:
 java.net.BindException: Адрес уже используется
