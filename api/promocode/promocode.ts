@@ -27,7 +27,8 @@ export class Promocode {
       }
     };
 
-    return this.db.put(params).promise();
+    return this.db.put(params).promise()
+      .then((data, err, oneMoreData) => console.log('asdasdasdasd ---------', data, err, oneMoreData));
   }
 
   public check(id: string, promocode: string): Promise<number> {

@@ -86,7 +86,6 @@ export class Profile {
             },
         };
         return db.put(params).promise()
-            .then((data, err, oneMoreData) => console.log(data, err, oneMoreData))
             .then(() => Promise.resolve({statusCode: 201, body: params.Item}))
             .catch((error) => Promise.reject(error));
     }
