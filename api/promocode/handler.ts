@@ -36,7 +36,10 @@ export function create(event, context, callback) {
   const promocode: Promocode = new Promocode();
 
   promocode.create(id, persent)
-    .then((data) => callback(null, { persent }))
+    .then((data) => {
+      console.log('------------->', JSON.stringify(data))
+      callback(null, { persent })
+    })
     .catch((err) => {
       console.log('Error, when create promocode: ', err);
       callback(err.statusCode ? `[${err.statusCode}] ${err.message}` :
