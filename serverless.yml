@@ -266,6 +266,21 @@ functions:
                 Content-Type: "'application/json'"
               template: $input.json('$')
 
+  getOrderById:
+      handler: api/admin/handler.getOrderById
+      events:
+        - http:
+            method: get
+            path: api/admin/getOrderById/{id}
+            cors: true
+            integration: lambda
+            authorizer:
+              name: auth
+              resultTtlInSeconds: 0
+            response:
+              headers:
+                Access-Control-Allow-Origin: "'*'"
+
 resources:
   Resources:
     NewResource:
