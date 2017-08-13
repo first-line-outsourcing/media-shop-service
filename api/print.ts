@@ -59,7 +59,10 @@ function generatePdf(rendered): Promise<any> {
       dpi: 300,
       'image-quality': 100,
       // 'user-style-sheet': styleSheet,
-    }, (err) => err ? notOk(err) : ok())
-      .pipe(createWriteStream(tmpFileLocation));
+    }, (err) => {
+      console.log(err);
+      err ? notOk(err) : ok();
+    })
+      .pipe(createWriteStream(tmpFileLocation))
   });
 }

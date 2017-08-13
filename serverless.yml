@@ -283,7 +283,7 @@ functions:
 
 resources:
   Resources:
-    NewResource:
+    PdfBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.PDF_BUCKET}
@@ -310,7 +310,7 @@ resources:
           StreamViewType: NEW_AND_OLD_IMAGES
         TableName: ${self:provider.environment.PROMOCODE_TABLE}
 
-    UsersTable:
+    UsersDynamoDb:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.USERS_TABLE}
