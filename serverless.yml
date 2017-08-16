@@ -1,4 +1,4 @@
-service: bmt-media-shop-service-refactor
+service: bmt-media-shop-service
 
 provider:
   name: aws
