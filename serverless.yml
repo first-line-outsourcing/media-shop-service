@@ -55,18 +55,18 @@ custom:
      buckets:
        - ${self:provider.environment.BUCKET}
        - ${self:provider.environment.PDF_BUCKET}
-  #  webpackIncludeModules: true
   documentation:
     raml:
       title: BMT media-shop API
       version: v1.0
   dirconfig:
       quiet: false
+  webpackIncludeModules: true
 
 plugins:
-  - serverless-plugin-typescript
+  - serverless-webpack
   - serverless-dir-config-plugin
   - serverless-dynamodb-local
-  - serverless-s3-local
   - serverless-offline
+  - serverless-s3-local
   - serverless-s3-remover
