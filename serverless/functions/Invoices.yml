@@ -1,0 +1,18 @@
+# ================== Invoices =====================
+
+printInvoice:
+  handler: api/invoice/handler.print
+  events:
+    - http:
+        path: api/invoice/print/{id}
+        method: get
+        integration: lambda
+        cors: true
+        authorizer:
+          name: auth
+          resultTtlInSeconds: 0
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
+            Content-Type: "'application/json'"
+          template: $input.json('$')

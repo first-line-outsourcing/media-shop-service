@@ -1,0 +1,29 @@
+# ================== Review =====================
+
+addReview:
+  handler: api/review/handler.add
+  events:
+    - http:
+        path: review
+        method: post
+        integration: lambda
+        cors: true
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
+            Content-Type: "'application/json'"
+          template: $input.json('$')
+
+getReviews:
+    handler: api/review/handler.getByProductID
+    events:
+      - http:
+          path: review/{productID}
+          method: get
+          integration: lambda
+          cors: true
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
+            template: $input.json('$')

@@ -1,0 +1,52 @@
+# ================== Profile =====================
+
+getAllItems:
+  handler: api/profile/handler.getAll
+  events:
+    - http:
+        path: api/profiles
+        method: get
+        integration: lambda
+        cors: true
+        authorizer:
+          name: auth
+          resultTtlInSeconds: 0
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
+            Content-Type: "'application/json'"
+          template: $input.json('$')
+
+getProfile:
+  handler: api/profile/handler.findOrCreate
+  events:
+    - http:
+        path: api/profile
+        method: post
+        integration: lambda
+        cors: true
+        authorizer:
+          name: auth
+          resultTtlInSeconds: 0
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
+            Content-Type: "'application/json'"
+          template: $input.json('$')
+
+updateProfile:
+  handler: api/profile/handler.update
+  events:
+    - http:
+        method: put
+        path: api/profile/{id}
+        cors: true
+        integration: lambda
+        authorizer:
+          name: auth
+          resultTtlInSeconds: 0
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
+            Content-Type: "'application/json'"
+          template: $input.json('$')

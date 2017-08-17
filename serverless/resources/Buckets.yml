@@ -1,0 +1,9 @@
+Resources:
+  PdfBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:provider.environment.PDF_BUCKET}
+  TemplatesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:provider.environment.BUCKET}

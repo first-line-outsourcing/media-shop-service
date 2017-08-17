@@ -1,0 +1,70 @@
+# ================== Promocodes =====================
+
+createPromocode:
+  handler: api/promocode/handler.create
+  events:
+    - http:
+        path: api/promocode/{userId}
+        method: post
+        integration: lambda
+        cors: true
+        authorizer:
+          name: auth
+          resultTtlInSeconds: 0
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
+            Content-Type: "'application/json'"
+          template: $input.json('$')
+
+
+checkPromocode:
+    handler: api/promocode/handler.check
+    events:
+      - http:
+          path: api/promocode/{userId}
+          method: put
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
+            template: $input.json('$')
+
+getPromocode:
+    handler: api/promocode/handler.get
+    events:
+      - http:
+          path: api/promocode/{userId}
+          method: get
+          integration: lambda
+          cors: true
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
+            template: $input.json('$')
+
+removePromocode:
+  handler: api/promocode/handler.remove
+  events:
+    - http:
+        path: api/promocode/{userId}
+        method: delete
+        integration: lambda
+        cors: true
+        authorizer:
+          name: auth
+          resultTtlInSeconds: 0
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
+            Content-Type: "'application/json'"
+          template: $input.json('$')

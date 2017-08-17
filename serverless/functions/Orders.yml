@@ -1,0 +1,66 @@
+# ================== Orders =====================
+
+createOrder:
+  handler: api/order/handler.createOrder
+  events:
+    - http:
+        method: post
+        path: api/order
+        cors: true
+        integration: lambda
+        authorizer:
+          name: auth
+          resultTtlInSeconds: 0
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
+            Content-Type: "'application/json'"
+          template: $input.json('$')
+
+getByProfileId:
+    handler: api/order/handler.getByProfileId
+    events:
+      - http:
+          method: get
+          path: api/order/getByProfileId/{id}
+          cors: true
+          integration: lambda
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
+            template: $input.json('$')
+
+getById:
+    handler: api/order/handler.getById
+    events:
+      - http:
+          method: get
+          path: api/order/getById/{id}
+          cors: true
+          integration: lambda
+          authorizer:
+            name: auth
+            resultTtlInSeconds: 0
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"
+              Content-Type: "'application/json'"
+            template: $input.json('$')
+
+getByRangeDates:
+  handler: api/order/handler.getByRangeDates
+  events:
+    - http:
+        path: api/order/getByRangeDates
+        method: get
+        integration: lambda
+        cors: true
+        response:
+          headers:
+            Access-Control-Allow-Origin: "'*'"
+            Content-Type: "'application/json'"
+          template: $input.json('$')
