@@ -55,9 +55,7 @@ custom:
      buckets:
        - ${self:provider.environment.BUCKET}
        - ${self:provider.environment.PDF_BUCKET}
-
-custom:
-#  webpackIncludeModules: true
+  #  webpackIncludeModules: true
   documentation:
     raml:
       title: BMT media-shop API
