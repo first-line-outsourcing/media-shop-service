@@ -1,233 +1,35 @@
-import * as profileFunc from '../api/profile/handler';
+import * as authFunc from '../api/auth/handler';
 import { expect } from 'chai';
 import * as LT from 'lambda-tester';
-import { HelperForTests } from './helper';
 
-const HFT = new HelperForTests();
+describe('checking authorization', () => {
 
-function beforeTests(done) {
-  process.env.USER_TABLE = HFT.getEnvVar('USER_TABLE');
-  process.env.IS_OFFLINE = 'true';
-  HFT.removeItemFromTable(process.env.USER_TABLE, done);
-}
+    it('Check authorization if authorization token is absent', () => {
+        return LT(authFunc.auth)
+            .event({
+                authorizationToken: null
+            })
+            .expectError((err) => expect(err.message).to.equal('[401] Unauthorized'));
+    });
 
-function afterTests() {
-  delete process.env.USER_TABLE;
-  delete process.env.IS_OFFLINE;
-}
+    it('Check authorization if token is exist and this token is correct', () => {
+        return LT(authFunc.auth)
+            .event({
+                authorizationToken: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL215dGVhbS1zaG9wLmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJ2a29udGFrdGV8OTU4NTE3MDQiLCJhdWQiOiJoZkR4NldYUzJua2NMVWhPY0hlMFhxMzRsWkUzd2ZySCIsImV4cCI6MTUwMzA0MDgxNywiaWF0IjoxNTAzMDA0ODE3fQ.IwsUZJzX4higxcwAdtZ-oQ3wV0cbkZ3Y6TC1AEVSubc'
+            })
+            .expectResult((result) => {
+                const [social, socialId] = result.principalId.split('|');
+                expect(social).to.equal('vkontakte');
+                expect(socialId).to.equal('95851704')
+            });
+    });
 
-describe('checking add and get profile in db', () => {
+    it('Check authorization if token is exist and this token is not correct', () => {
+        return LT(authFunc.auth)
+            .event({
+                authorizationToken: 'Bearer IwsUZJzX4higxcwAdtZ-oQ3wV0cbkZ3Y6TC1AEVSubc'
+            })
+            .expectError((err) => expect(err.message).to.equal('[401] Unauthorized'));
+    });
 
-  const demoProfile = {
-    firstName: 'Semyon',
-    lastName: 'Ermolenko',
-    social: 'vkontakte',
-    nickName: 'sem.ermolenko',
-    socialId: '95851704',
-    currency: '$',
-    picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4',
-  };
-
-  before(beforeTests);
-  after(afterTests);
-
-  it('when create profile with empty field', () => {
-    const tmp = {
-      firstName: 'Semyon',
-      lastName: 'Ermolenko',
-      social: 'vkontakte',
-      nickName: 'sem.ermolenko',
-      socialId: '95851704',
-      currency: '',
-      picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4',
-    };
-    return LT(profileFunc.findOrCreate)
-      .event({
-        principalId: 'vkontakte|95851704',
-        body: tmp,
-      })
-      .expectError();
-  });
-
-  it('when create profile', () => {
-    return LT(profileFunc.findOrCreate)
-      .event({
-        principalId: 'vkontakte|95851704',
-        body: demoProfile,
-      })
-      .expectResult((result) => {
-        delete result.body.id;
-        expect(result.body).to.exist;
-        for (const key of Object.keys(result.body)) {
-          expect(result.body[key]).to.equal(demoProfile[key]);
-        }
-      });
-  });
-
-  it('when create profile but this profile is exist in db', () => {
-    return LT(profileFunc.findOrCreate)
-      .event({
-        principalId: 'vkontakte|95851704',
-        body: demoProfile,
-      })
-      .expectResult((result) => {
-        delete result.id;
-        expect(result).to.exist;
-        for (const key of Object.keys(result)) {
-          expect(result.body[key]).to.equal(demoProfile[key]);
-        }
-      });
-  });
-
-  it('when get profile and this profile exist in db', () => {
-    return LT(profileFunc.findOrCreate)
-      .event({
-        principalId: 'vkontakte|95851704',
-        body: demoProfile,
-      })
-      .expectResult((result) => {
-        delete result.id;
-        expect(result).to.exist;
-        for (const key of Object.keys(result)) {
-          expect(result.body[key]).to.equal(demoProfile[key]);
-        }
-      });
-  });
-
-  it('when get profile and principalId field is bad', () => {
-    return LT(profileFunc.findOrCreate)
-      .event({
-        principalId: 'vkontakte',
-        body: demoProfile,
-      })
-      .expectError();
-  });
-
-  it('when get profile and db is off', () => {
-    delete process.env.IS_OFFLINE;
-    return LT(profileFunc.findOrCreate)
-      .event({
-        principalId: 'vkontakte',
-        body: demoProfile,
-      })
-      .expectError();
-  });
-});
-
-describe(`getting all items from db`, () => {
-  before(beforeTests);
-  after(afterTests);
-
-  it('getting all items', () => {
-    return LT(profileFunc.getAll)
-      .expectResult((res) => {
-        expect(res).to.exist;
-      });
-  });
-
-  it('getting all items but db is off', () => {
-    delete process.env.IS_OFFLINE;
-    return LT(profileFunc.getAll)
-      .expectError();
-  });
-});
-
-describe(`update profile`, () => {
-  const profile: any = {
-    firstName: 'Semyon',
-    lastName: 'Ermolenko',
-    social: 'vkontakte',
-    nickName: 'sem.ermolenko',
-    socialId: '95851704',
-    currency: '$',
-    picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4',
-  };
-  before(beforeTests);
-  after(afterTests);
-
-  it('create profile before update', () => {
-    return LT(profileFunc.findOrCreate)
-      .event({
-        principalId: 'vkontakte|95851704',
-        body: profile,
-      })
-      .expectResult((result) => {
-        profile['id'] = result.body.id;
-        expect(result.body).to.exist;
-        for (const key of Object.keys(result.body)) {
-          expect(result.body[key]).to.equal(profile[key]);
-        }
-      });
-  });
-
-  it(`when update profile`, () => {
-    profile.firstName = 'Egor';
-    return LT(profileFunc.update)
-      .event({
-        principalId: 'vkontakte|95851704',
-        body: {
-          field: 'firstName',
-          value: 'Egor',
-        },
-        path: {
-          id: profile.id,
-        },
-      })
-      .expectResult(() => {
-        return LT(profileFunc.findOrCreate)
-          .event({ principalId: 'vkontakte|95851704' })
-          .expectResult((result) => {
-            expect(result).to.exist;
-            for (const key of Object.keys(result)) {
-              expect(result.body[key]).to.equal(profile[key]);
-            }
-          });
-      });
-  });
-
-  it(`when update profile and path.id is bad`, () => {
-    return LT(profileFunc.update)
-      .event({
-        principalId: 'vkontakte|95851704',
-        body: {
-          field: 'firstName',
-          value: 'Egor',
-        },
-        path: {
-          id: 'blablabla',
-        },
-      })
-      .expectError();
-  });
-
-  it(`when update profile and value field is empty`, () => {
-    return LT(profileFunc.update)
-      .event({
-        principalId: 'vkontakte|95851704',
-        body: {
-          field: 'firstName',
-          value: '',
-        },
-        path: {
-          id: profile.id,
-        },
-      })
-      .expectError();
-  });
-
-  it('when update profile and db is off', () => {
-    delete process.env.IS_OFFLINE;
-    return LT(profileFunc.update)
-      .event({
-        principalId: 'vkontakte',
-        body: {
-          field: 'firstName',
-          value: 'Egor',
-        },
-        path: {
-          id: profile.id,
-        },
-      })
-      .expectError();
-  });
 });
