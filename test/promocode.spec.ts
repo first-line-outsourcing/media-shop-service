@@ -381,11 +381,3 @@ describe('checking check promocode', () => {
       });
   });
 });
-
-describe('checking promocode manager get params', () => {
-  it('when create params without params', () => {
-    const params = getParams('PROMOCODE_TABLE', {});
-    expect(params.Item).to.equal(undefined);
-    expect(params.TableName).to.equal(process.env.PROMOCODE_TABLE);
-  });
-});
