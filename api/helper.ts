@@ -41,12 +41,15 @@ export function removeFilePromise(tmpFileLocation): Promise<any> {
 }
 
 export function log(...args) {
-  if(process.env.IS_OFFLINE) { return; }
+  if (process.env.IS_OFFLINE) {
+    return;
+  }
   console.log.apply(console, args);
 }
 
 export class Dynamo {
   protected db;
+
   constructor(IS_OFFLINE?) {
     if (process.env.IS_OFFLINE || IS_OFFLINE) {
       this.db = new DynamoDB.DocumentClient({
@@ -61,4 +64,10 @@ export class Dynamo {
   static converter(data) {
     return DynamoDB.Converter.unmarshall(data);
   }
+}
+
+export function getParams(tableName, params?) {
+  return Object.assign({
+    TableName: process.env[tableName] as string,
+  }, params || {});
 }

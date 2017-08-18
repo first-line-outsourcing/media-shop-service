@@ -23,4 +23,6 @@ printInvoice:
                 body:
                   application/json:
                     example: |
-                      "da8e5390-8337-11e7-b80c-5f392590e7a0"
+                      {
+                        "id":"c1b23980-8437-11e7-a5d0-d73128fe14b3"
+                      }

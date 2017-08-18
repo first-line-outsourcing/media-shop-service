@@ -1,8 +1,8 @@
 import { config } from 'aws-sdk';
-import { Dynamo } from '../api/helper';
-import { safeLoad } from 'js-yaml';
 import { readFileSync } from 'fs';
-import { normalize, join } from 'path';
+import { safeLoad } from 'js-yaml';
+import { join, normalize } from 'path';
+import { Dynamo } from '../api/helper';
 
 config.update({
   accessKeyId: 'YOURKEY',
