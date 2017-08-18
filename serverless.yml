@@ -60,7 +60,7 @@ custom:
       title: BMT media-shop API
       version: v1.0
   dirconfig:
-      quiet: false
+      quiet: true
   webpackIncludeModules: true
 
 plugins:
