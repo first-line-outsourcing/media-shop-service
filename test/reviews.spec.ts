@@ -1,6 +1,6 @@
-import * as reviewsFunc from '../api/review/handler';
 import { expect } from 'chai';
 import * as LT from 'lambda-tester';
+import * as reviewsFunc from '../api/review/handler';
 import { HelperForTests } from './helper';
 
 const HFT = new HelperForTests();
@@ -66,7 +66,7 @@ describe('checking work with reviews', () => {
   it('when get review without productID', () => {
     return LT(reviewsFunc.getByProductID)
       .event({
-        path: { }
+        path: {}
       })
       .expectError((error) => {
         console.log(error.message);

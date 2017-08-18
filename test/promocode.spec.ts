@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import * as LT from 'lambda-tester';
+import { getParams } from '../api/helper';
 import * as promocodeHandler from '../api/promocode/handler';
 import { CheckBody, CreateBody } from '../api/promocode/promocode.manager';
 import { HelperForTests } from './helper';
-import { getParams } from '../api/helper';
 
 const HFT = new HelperForTests();
 
@@ -384,7 +384,7 @@ describe('checking check promocode', () => {
 
 describe('checking promocode manager get params', () => {
   it('when create params without params', () => {
-    const params = getParams('PROMOCODE_TABLE',{});
+    const params = getParams('PROMOCODE_TABLE', {});
     expect(params.Item).to.equal(undefined);
     expect(params.TableName).to.equal(process.env.PROMOCODE_TABLE);
   });
