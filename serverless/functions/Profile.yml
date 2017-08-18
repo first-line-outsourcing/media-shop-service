@@ -33,6 +33,36 @@ getProfile:
             Access-Control-Allow-Origin: "'*'"
             Content-Type: "'application/json'"
           template: $input.json('$')
+        documentation:
+          raml:
+            responses:
+              200:
+                body:
+                  application/json:
+                    example: |
+                      {
+                        "body":{
+                          "id":"30835c30-8335-11e7-9406-5b932ece1203",
+                          "socialId":"89146810",
+                          "social":"vkontakte",
+                          "firstName":"Oleg",
+                          "lastName":"Skvortsov",
+                          "currency":"$",
+                          "nickName":"id89146810",
+                          "picture":"https://pp.userapi.com/c636124/v636124810/16064/z8z7jYhf2uE.jpg",
+                          "address":[
+                            {
+                              "zip":"ddd",
+                              "country":"Algeria",
+                              "addressLine2":"dsa",
+                              "state":"sss",
+                              "streetAddress":"asd",
+                              "city":"aaa"
+                            }
+                          ]
+                        },
+                        "statusCode":200
+                      }
 
 updateProfile:
   handler: api/profile/handler.update
@@ -50,3 +80,11 @@ updateProfile:
             Access-Control-Allow-Origin: "'*'"
             Content-Type: "'application/json'"
           template: $input.json('$')
+        documentation:
+          raml:
+            responses:
+              200:
+                body:
+                  application/json:
+                    example: |
+                      ""

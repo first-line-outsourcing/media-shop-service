@@ -16,7 +16,16 @@ createPromocode:
             Access-Control-Allow-Origin: "'*'"
             Content-Type: "'application/json'"
           template: $input.json('$')
-
+        documentation:
+          raml:
+            responses:
+              200:
+                body:
+                  application/json:
+                    example: |
+                      {
+                        "percent":10
+                      }
 
 checkPromocode:
     handler: api/promocode/handler.check
@@ -34,6 +43,16 @@ checkPromocode:
               Access-Control-Allow-Origin: "'*'"
               Content-Type: "'application/json'"
             template: $input.json('$')
+          documentation:
+            raml:
+              responses:
+                200:
+                  body:
+                    application/json:
+                      example: |
+                        {
+                          "percent":10
+                        }
 
 getPromocode:
     handler: api/promocode/handler.get
@@ -51,6 +70,17 @@ getPromocode:
               Access-Control-Allow-Origin: "'*'"
               Content-Type: "'application/json'"
             template: $input.json('$')
+          documentation:
+            raml:
+              responses:
+                200:
+                  body:
+                    application/json:
+                      example: |
+                        {
+                          "promocode":"BESTMOOD-zfDkF-TECH",
+                          "percent":10
+                        }
 
 removePromocode:
   handler: api/promocode/handler.remove
@@ -68,3 +98,13 @@ removePromocode:
             Access-Control-Allow-Origin: "'*'"
             Content-Type: "'application/json'"
           template: $input.json('$')
+        documentation:
+          raml:
+            responses:
+              200:
+                body:
+                  application/json:
+                    example: |
+                      {
+                        "message":"Promocode is deleted"
+                      }
