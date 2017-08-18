@@ -1,6 +1,6 @@
 # ================== Profile =====================
 
-getAllItems:
+getAllProfiles:
   handler: api/profile/handler.getAll
   events:
     - http:

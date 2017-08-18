@@ -1,7 +1,7 @@
 # ================== Review =====================
 
-addReview:
-  handler: api/review/handler.add
+createReview:
+  handler: api/review/handler.create
   events:
     - http:
         path: api/review

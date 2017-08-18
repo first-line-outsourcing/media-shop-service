@@ -17,7 +17,7 @@ createOrder:
             Content-Type: "'application/json'"
           template: $input.json('$')
 
-getByProfileId:
+getOrderByProfileId:
     handler: api/order/handler.getByProfileId
     events:
       - http:
@@ -34,7 +34,7 @@ getByProfileId:
               Content-Type: "'application/json'"
             template: $input.json('$')
 
-getById:
+getOrderById:
     handler: api/order/handler.getById
     events:
       - http:
@@ -51,7 +51,7 @@ getById:
               Content-Type: "'application/json'"
             template: $input.json('$')
 
-getByRangeDates:
+getOrderByRangeDates:
   handler: api/order/handler.getByRangeDates
   events:
     - http:
