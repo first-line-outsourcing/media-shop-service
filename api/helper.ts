@@ -1,6 +1,6 @@
 import { existsSync, readFile, unlink, } from 'fs';
 import { DynamoDB } from 'aws-sdk';
-import { nodemailer } from 'nodemailer';
+const nodemailer = require('nodemailer');
 
 export const nodemailerMailgun = nodemailer.createTransport({
   service: 'Mailgun',
@@ -56,5 +56,9 @@ export class Dynamo {
     } else {
       this.db = new DynamoDB.DocumentClient();
     }
+  }
+
+  static converter(data) {
+    return DynamoDB.Converter.unmarshall(data);
   }
 }

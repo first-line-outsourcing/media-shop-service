@@ -35,3 +35,26 @@ export async function print(event, context, callback) {
    }
  }
 }
+
+export async function printByTrigger(order: Order, context, callback) {
+  const manager = new InvoiceManager();
+  const profileManager = new ProfileManager();
+  order.products.forEach(product => {
+    product.description = product.description.substr(0, 130).replace(/([\uD800-\uDFFF].)|\n|([^\x00-\x7F])/g, ''),
+      product.name = product.name.replace(/([\uD800-\uDFFF].)|([^\x00-\x7F])/g, '');
+  });
+  order.createdBy = await profileManager.getById(order.createdBy);
+
+  if (order.createdBy['email']) {
+    try {
+      await manager.printOrder(order, context.awsRequestId);
+      await removeFilePromise(InvoiceManager.getFileLocation(order.id));
+      callback(null, { id: order.id });
+    } catch (err) {
+      await removeFilePromise(InvoiceManager.getFileLocation(order.id));
+      errorHandler(callback)(err);
+    }
+  }
+
+  return order.createdBy;
+}

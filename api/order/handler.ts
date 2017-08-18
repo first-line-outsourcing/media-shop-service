@@ -61,4 +61,10 @@ export function getById(event, context, callback) {
     .catch(errorHandler(callback));
 }
 
+export function ordersTrigger(event, context, callback) {
+  const order = event.Records[0]['dynamodb']['NewImage'];
+  const manager = new OrderManager();
+  manager.notification(order, context, callback);
+}
+
 

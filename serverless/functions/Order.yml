@@ -1,12 +1,4 @@
 # ================== Orders =====================
-oredersTrigger:
-      handler: api/order/handler.ordersTrigger
-      events:
-        - stream:
-            type: dynamodb
-            arn:
-              Fn::GetAtt: [ "OrdersDynamoDb", "StreamArn" ]
-
 createOrder:
   handler: api/order/handler.createOrder
   events:
@@ -353,3 +345,11 @@ getOrderByRangeDates:
                           "createdBy":"30835c30-8335-11e7-9406-5b932ece1203"
                         }
                       ]
+
+oredersTrigger:
+  handler: api/order/handler.ordersTrigger
+  events:
+    - stream:
+        type: dynamodb
+        arn:
+          Fn::GetAtt: [ "OrdersDynamoDb", "StreamArn" ]
