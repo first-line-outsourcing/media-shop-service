@@ -32,25 +32,17 @@ export class ProfileManager extends Dynamo {
 
     return this.db.scan(params).promise()
       .then(data => data.Items.map(item => new Profile(item)))
-      .then((profiles: Profile[]) => {
-        if (!profiles.length) {
-          return Promise.reject({
-            statusCode: 404,
-            message: `An item could not be found with id: ${socialId}`
-          });
-        }
-        return profiles.pop();
-      });
+      .then((profiles: Profile[]) => profiles.pop());
   }
 
   public findOrCreate(socialId: string, social: string, user: any): Promise<Profile> {
     return this.getByToken(socialId, social)
-      .then(data => Promise.resolve(data))
-      .catch((err) => {
-        if (err.statusCode === 404) {
+      .then((data: Profile) => {
+        if (data) {
+          return Promise.resolve(data);
+        } else {
           return this.create(socialId, social, user);
         }
-        return Promise.reject(err);
       });
   }
 
