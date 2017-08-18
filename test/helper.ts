@@ -1,5 +1,5 @@
 import { config } from 'aws-sdk';
-import { Dynamo, getParams } from '../api/helper';
+import { Dynamo } from '../api/helper';
 import { safeLoad } from 'js-yaml';
 import { readFileSync } from 'fs';
 import { normalize, join } from 'path';
