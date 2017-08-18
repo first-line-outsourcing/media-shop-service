@@ -1,4 +1,11 @@
 # ================== Orders =====================
+oredersTrigger:
+      handler: api/order/handler.ordersTrigger
+      events:
+        - stream:
+            type: dynamodb
+            arn:
+              Fn::GetAtt: [ "OrdersDynamoDb", "StreamArn" ]
 
 createOrder:
   handler: api/order/handler.createOrder
