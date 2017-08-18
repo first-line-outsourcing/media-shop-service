@@ -8,7 +8,7 @@
     "test": "nyc --check-coverage mocha test/*.spec.ts",
     "serverless-offline": "sls offline start",
     "raml": "sls raml > documentation/docs.raml",
-    "ramlhtml": "raml2html documentation/docs.raml > documentation/index.html",
+    "ramlhtml": "raml2html documentation/docs.raml > documentation/index.html --theme 'raml2html-slate-theme'",
     "documentation": "npm run raml && npm run ramlhtml"
   },
   "nyc": {
@@ -81,6 +81,7 @@
     "mustache": "2.3.0",
     "raml-serverless": "^0.2.0",
     "raml2html": "^6.4.1",
+    "raml2html-slate-theme": "^2.1.2",
     "serverless-dir-config-plugin": "^0.1.5",
     "serverless-dynamodb-local": "0.2.24",
     "serverless-s3-remover": "^0.2.0",
