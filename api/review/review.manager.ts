@@ -6,7 +6,7 @@ export class ReviewManager extends Dynamo {
         super();
     }
 
-    public add(data): Promise<Review> {
+    public create(data): Promise<Review> {
         let review = new Review(data);
         const params = getParams('REVIEW_TABLE', {
             Item: review,
