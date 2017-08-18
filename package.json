@@ -9,7 +9,8 @@
     "serverless-offline": "sls offline start",
     "raml": "sls raml > documentation/docs.raml",
     "ramlhtml": "raml2html documentation/docs.raml > documentation/index.html --theme 'raml2html-slate-theme'",
-    "documentation": "npm run raml && npm run ramlhtml"
+    "documentation": "npm run raml && npm run ramlhtml",
+    "deploy": "npm start && npm run documentation && sls s3sync"
   },
   "nyc": {
     "check-coverage": true,
@@ -52,11 +53,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/chai": "4.0.2",
     "@types/js-yaml": "^3.9.1",
+    "@types/mocha": "2.2.41",
     "@types/mustache": "0.8.29",
     "@types/node": "8.0.19",
-    "@types/chai": "4.0.2",
-    "@types/mocha": "2.2.41",
     "chai": "4.1.1",
     "copy-webpack-plugin": "^4.0.1",
     "lambda-tester": "3.0.2",
@@ -65,6 +66,7 @@
     "serverless-offline": "3.15.3",
     "serverless-plugin-typescript": "1.0.0",
     "serverless-s3-local": "0.2.5",
+    "serverless-s3-sync": "^1.2.0",
     "serverless-webpack": "^2.2.0",
     "source-map-support": "0.4.15",
     "ts-loader": "^2.3.2",
