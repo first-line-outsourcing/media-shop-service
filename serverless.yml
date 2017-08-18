@@ -31,6 +31,7 @@ provider:
 
   environment:
     BUCKET: ${self:service}-templates
+    DOCUMENTATION_BUCKET: ${self:service}-docs
     PDF_BUCKET: ${self:service}-pdf
     REVIEW_TABLE: ${self:service}-review
     PROMOCODE_TABLE: ${self:service}-promocode
@@ -51,6 +52,9 @@ custom:
     port: 8800
     directory: /tmp
     cors: true
+  s3Sync:
+    - bucketName: ${self:provider.environment.DOCUMENTATION_BUCKET}
+      localDir: documentation
   remover:
      buckets:
        - ${self:provider.environment.BUCKET}
@@ -70,4 +74,5 @@ plugins:
   - serverless-offline
   - serverless-s3-local
   - serverless-s3-remover
+  - serverless-s3-sync
   - raml-serverless

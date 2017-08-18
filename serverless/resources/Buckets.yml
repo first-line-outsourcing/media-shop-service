@@ -3,7 +3,15 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: ${self:provider.environment.PDF_BUCKET}
+      AccessControl: PublicRead
   TemplatesBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: ${self:provider.environment.BUCKET}
+  DocumentationSiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:provider.environment.DOCUMENTATION_BUCKET}
+      AccessControl: PublicReadWrite
+      WebsiteConfiguration:
+        IndexDocument: index.html

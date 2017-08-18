@@ -9,3 +9,4 @@ api/**.js
 .nyc_output/
 .build/
 typings/
+documentation/
