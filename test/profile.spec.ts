@@ -56,10 +56,12 @@ describe('checking add and get profile in db', () => {
         body: demoProfile,
       })
       .expectResult((result) => {
-        delete result.body.id;
-        expect(result.body).to.exist;
-        for (const key of Object.keys(result.body)) {
-          expect(result.body[key]).to.equal(demoProfile[key]);
+        delete result.id;
+        expect(result).to.exist;
+        expect(result.isNew).to.equal(true);
+        delete result.isNew;
+        for (const key of Object.keys(result)) {
+          expect(result[key]).to.equal(demoProfile[key]);
         }
       });
   });
@@ -74,7 +76,7 @@ describe('checking add and get profile in db', () => {
         delete result.id;
         expect(result).to.exist;
         for (const key of Object.keys(result)) {
-          expect(result.body[key]).to.equal(demoProfile[key]);
+          expect(result[key]).to.equal(demoProfile[key]);
         }
       });
   });
@@ -89,7 +91,7 @@ describe('checking add and get profile in db', () => {
         delete result.id;
         expect(result).to.exist;
         for (const key of Object.keys(result)) {
-          expect(result.body[key]).to.equal(demoProfile[key]);
+          expect(result[key]).to.equal(demoProfile[key]);
         }
       });
   });
@@ -152,10 +154,12 @@ describe(`update profile`, () => {
         body: profile,
       })
       .expectResult((result) => {
-        profile['id'] = result.body.id;
-        expect(result.body).to.exist;
-        for (const key of Object.keys(result.body)) {
-          expect(result.body[key]).to.equal(profile[key]);
+        profile['id'] = result.id;
+        expect(result).to.exist;
+        expect(result.isNew).to.equal(true);
+        delete result.isNew;
+        for (const key of Object.keys(result)) {
+          expect(result[key]).to.equal(profile[key]);
         }
       });
   });
@@ -179,7 +183,7 @@ describe(`update profile`, () => {
           .expectResult((result) => {
             expect(result).to.exist;
             for (const key of Object.keys(result)) {
-              expect(result.body[key]).to.equal(profile[key]);
+              expect(result[key]).to.equal(profile[key]);
             }
           });
       });
