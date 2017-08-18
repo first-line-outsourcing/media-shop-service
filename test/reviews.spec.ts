@@ -33,7 +33,7 @@ describe('checking work with reviews', () => {
   after(afterTests);
 
   it('when create new review', () => {
-    return LT(reviewsFunc.add)
+    return LT(reviewsFunc.create)
       .event({
         body: demoNewReview
       })
@@ -43,7 +43,7 @@ describe('checking work with reviews', () => {
   });
 
   it('when create with invalid date', () => {
-    return LT(reviewsFunc.add)
+    return LT(reviewsFunc.create)
       .event({
         body: demoErrorReview
       })
@@ -76,7 +76,7 @@ describe('checking work with reviews', () => {
 
   it('when create new review when server when DB is not offline', () => {
     delete process.env.IS_OFFLINE;
-    return LT(reviewsFunc.add)
+    return LT(reviewsFunc.create)
       .event({
         body: demoNewReview
       })
