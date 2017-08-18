@@ -47,3 +47,9 @@ export class Dynamo {
     }
   }
 }
+
+export function getParams(tableName, params?) {
+    return Object.assign({
+        TableName: process.env[tableName] as string,
+    }, params || {});
+}
