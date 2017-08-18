@@ -52,6 +52,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/js-yaml": "^3.9.1",
+    "@types/mustache": "0.8.29",
+    "@types/node": "8.0.19",
     "@types/chai": "4.0.2",
     "@types/mocha": "2.2.41",
     "chai": "4.1.1",
@@ -68,24 +71,21 @@
     "ts-node": "3.3.0",
     "typescript": "^2.4.2",
     "typings": "2.1.1",
-    "webpack": "^3.3.0"
+    "raml-serverless": "^0.2.0",
+    "raml2html-slate-theme": "^2.1.2",
+    "raml2html": "^6.4.1",
+    "serverless-dir-config-plugin": "^0.1.5",
+    "serverless-dynamodb-local": "0.2.24",
+    "serverless-s3-remover": "^0.2.0",
+    "webpack": "^3.3.0",
+    "webpack-shell-plugin": "^0.5.0"
   },
   "dependencies": {
-    "@types/js-yaml": "^3.9.1",
-    "@types/mustache": "0.8.29",
-    "@types/node": "8.0.19",
     "aws-sdk": "2.94.0",
     "faker": "4.1.0",
     "js-yaml": "^3.9.1",
     "jsonwebtoken": "7.4.2",
     "mustache": "2.3.0",
-    "raml-serverless": "^0.2.0",
-    "raml2html": "^6.4.1",
-    "raml2html-slate-theme": "^2.1.2",
-    "serverless-dir-config-plugin": "^0.1.5",
-    "serverless-dynamodb-local": "0.2.24",
-    "serverless-s3-remover": "^0.2.0",
-    "webpack-shell-plugin": "^0.5.0",
     "wkhtmltopdf": "0.3.4"
   }
 }
