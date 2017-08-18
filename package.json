@@ -84,6 +84,7 @@
   },
   "dependencies": {
     "aws-sdk": "2.94.0",
+    "dotenv": "4.0.0",
     "faker": "4.1.0",
     "js-yaml": "^3.9.1",
     "jsonwebtoken": "7.4.2",

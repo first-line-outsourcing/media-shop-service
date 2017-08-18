@@ -26,6 +26,7 @@ getAllProfiles:
                       [
                         {
                           "id":"30835c30-8335-11e7-9406-5b932ece1203",
+                          "isNew": false
                           "socialId":"89146810",
                           "social":"vkontakte",
                           "firstName":"Oleg",
@@ -72,6 +73,7 @@ getProfile:
                       {
                         "body":{
                           "id":"30835c30-8335-11e7-9406-5b932ece1203",
+                          "isNew": false
                           "socialId":"89146810",
                           "social":"vkontakte",
                           "firstName":"Oleg",
