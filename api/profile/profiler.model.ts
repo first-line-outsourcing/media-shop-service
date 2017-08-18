@@ -12,6 +12,7 @@ export class Profile {
   public nickName: string;
   public picture: string;
   public address: string;
+  public isNew?: boolean;
 
   constructor(data) {
     this.id = data.id || uuid.v1();

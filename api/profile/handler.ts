@@ -18,7 +18,7 @@ export function findOrCreate(event, context, callback) {
   const manager = new ProfileManager();
 
   manager.findOrCreate(id, social, user)
-    .then((data: Profile | any) => callback(null, data.statusCode ? data : { body: data, statusCode: 200 }))
+    .then((data: Profile | any) => callback(null, data))
     .catch(errorHandler(callback));
 }
 

@@ -66,17 +66,18 @@ export class ProfileManager extends Dynamo {
       nickName: userData.nickName,
       orders: userData.orders,
       picture: userData.picture,
-      address: userData.address,
+      address: userData.address
     });
 
     const params = getParams('USER_TABLE', {
       Item: profile,
     });
 
-    return this.db.put(params).promise().then(() => ({
-      statusCode: 201,
-      body: profile,
-    }));
+    return this.db.put(params).promise()
+      .then(() => {
+        profile.isNew = true;
+        return profile;
+      });
   }
 
   public update(id: string, field: string, value: any): Promise<any> {
