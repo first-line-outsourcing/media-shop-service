@@ -6,7 +6,10 @@
   "scripts": {
     "start": "sls deploy",
     "test": "nyc --check-coverage mocha test/*.spec.ts",
-    "serverless-offline": "sls offline start"
+    "serverless-offline": "sls offline start",
+    "raml": "sls raml > documentation/docs.raml",
+    "ramlhtml": "raml2html documentation/docs.raml > documentation/index.html",
+    "documentation": "npm run raml && npm run ramlhtml"
   },
   "nyc": {
     "check-coverage": true,
@@ -76,6 +79,8 @@
     "js-yaml": "^3.9.1",
     "jsonwebtoken": "7.4.2",
     "mustache": "2.3.0",
+    "raml-serverless": "^0.2.0",
+    "raml2html": "^6.4.1",
     "serverless-dir-config-plugin": "^0.1.5",
     "serverless-dynamodb-local": "0.2.24",
     "serverless-s3-remover": "^0.2.0",

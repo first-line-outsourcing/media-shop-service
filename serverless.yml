@@ -70,3 +70,4 @@ plugins:
   - serverless-offline
   - serverless-s3-local
   - serverless-s3-remover
+  - raml-serverless
