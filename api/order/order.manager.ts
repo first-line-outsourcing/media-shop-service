@@ -1,8 +1,7 @@
-import { Dynamo, getParams, nodemailerMailgun } from '../helper';
+import { Dynamo, getParams } from '../helper';
 import { ProfileManager } from '../profile/profile.manager';
 import { PromocodeManager } from '../promocode/promocode.manager';
 import { Order } from './order.model';
-import { printByTrigger } from '../invoice/handler';
 
 const faker = require('faker');
 
@@ -76,36 +75,6 @@ export class OrderManager extends Dynamo {
     });
     return this.db.get(params).promise()
       .then((data) => data.Item);
-  }
-
-  public notification(data, context, cb) {
-    const order = new Order(Dynamo.converter(data));
-    printByTrigger(order, context, cb)
-      .then((user) => {
-        console.log(user);
-        if (user['email']) {
-          nodemailerMailgun.sendMail({
-            from: 'BMT',
-            to: `${user['email']}`,
-            subject: 'Media shop - BMT',
-            text: 'Link to Invoice?',
-            html: `
-              <div>
-                <h1>Notification</h1>
-                <p>
-                  <a href="https://s3.eu-central-1.amazonaws.com/${process.env.PDF_BUCKET}/${order.id}">Invoice link</a>
-                </p>
-              </div>
-            `
-          }, (error, response) => {
-            if (error) {
-              console.error(error)
-            } else {
-              cb(null, response);
-            }
-          });
-        }
-      })
   }
 
   /************* Private methods ********* ****/

@@ -1,6 +1,9 @@
-import { errorHandler, log } from '../helper';
+import { Dynamo, errorHandler, log, removeFilePromise } from '../helper';
 import { ProfileManager } from '../profile/profile.manager';
 import { OrderManager } from './order.manager';
+import { Order } from './order.model';
+import { InvoiceManager } from '../invoice/invioce.manager';
+import { Nodemailer } from '../mailer.service';
 
 export function createOrder(event, context, callback) {
   const data = event.body;
@@ -61,10 +64,33 @@ export function getById(event, context, callback) {
     .catch(errorHandler(callback));
 }
 
-export function ordersTrigger(event, context, callback) {
-  const order = event.Records[0]['dynamodb']['NewImage'];
-  const manager = new OrderManager();
-  manager.notification(order, context, callback);
+export async function ordersTrigger(event, context, callback) {
+  let order = new Order(Dynamo.convert(event.Records[0]['dynamodb']['NewImage']));
+  const profileManager = new ProfileManager();
+
+  order.createdBy = await profileManager.getById(order.createdBy);
+
+  if (!order.createdBy['email']) {
+    callback(null, null);
+  }
+
+  const manager = new InvoiceManager();
+  order = InvoiceManager.reformatOrderProducts(order);
+
+  try {
+    await manager.printOrder(order, context.awsRequestId);
+    await removeFilePromise(InvoiceManager.getFileLocation(order.id));
+    callback(null, { id: order.id });
+  } catch (err) {
+    await removeFilePromise(InvoiceManager.getFileLocation(order.id));
+    errorHandler(callback)(err);
+  }
+
+  const nodemailer = new Nodemailer();
+  nodemailer.sendMailInvoiceLink(order.createdBy['email'], order.id)
+    .then((data) => callback(null, data))
+    .catch(errorHandler(callback))
+
 }
 
 

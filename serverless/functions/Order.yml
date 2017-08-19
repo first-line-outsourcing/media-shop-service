@@ -346,7 +346,7 @@ getOrderByRangeDates:
                         }
                       ]
 
-oredersTrigger:
+ordersTrigger:
   handler: api/order/handler.ordersTrigger
   events:
     - stream:

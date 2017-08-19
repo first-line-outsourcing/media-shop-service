@@ -1,16 +1,5 @@
 import { existsSync, readFile, unlink, } from 'fs';
 import { DynamoDB } from 'aws-sdk';
-const nodemailer = require('nodemailer');
-
-export const nodemailerMailgun = nodemailer.createTransport({
-  service: 'Mailgun',
-  host: 'smtp.mailgun.org',
-  port: 465,
-  auth: {
-    user: 'postmaster@support.bestmood.tech',
-    pass: 'e2242ac7e2c433e58ec90ae81559f14b'
-  }
-});
 
 export function errorHandler(callback, customMessage?) {
   return (err) => {
@@ -61,7 +50,7 @@ export class Dynamo {
     }
   }
 
-  static converter(data) {
+  static convert(data) {
     return DynamoDB.Converter.unmarshall(data);
   }
 }
