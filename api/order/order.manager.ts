@@ -22,11 +22,6 @@ export class OrderManager extends Dynamo {
     return this.db.put(params).promise().then(() => order);
   }
 
-  public getAll(): Promise<Order[]> {
-    return this.db.scan(getParams('ORDER_TABLE', {})).promise()
-      .then(data => data.Items.map(item => new Order(item)));
-  }
-
   public getByRangeDates(from: string, to: string): Promise<Order[]> {
     const params = getParams('ORDER_TABLE', {
       FilterExpression: '#createdAt > :from AND #createdAt < :to',

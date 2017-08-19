@@ -49,3 +49,59 @@ export class HelperForTests extends Dynamo {
     return this.yaml.provider.environment[tableName].replace('${self:service}', this.yaml.service);
   }
 }
+
+export const fakeOrder = {
+  products:
+    [{
+      id: 315635,
+      type: 'movie',
+      name: 'Spider-Man: Homecoming',
+      cover: 'https://image.tmdb.org/t/p/w780/c24sv2weTHPsmDa7jEMN0m2P3RT.jpg',
+      description: 'Following the events of Captain America: Civil War, Peter Parker, with the help of his mentor Tony Stark, tries to balance his life as an ordinary high school student in Queens, New York City, with fighting crime as his superhero alter ego Spider-Man as a new threat, the Vulture, emerges.',
+      vote: 7.4,
+      voteCount: 2448,
+      price: 14.8,
+      year: '2017',
+      count: 1,
+      total: 14.8
+    },
+      {
+        id: 324852,
+        type: 'movie',
+        name: 'Despicable Me 3',
+        cover: 'https://image.tmdb.org/t/p/w780/5qcUGqWoWhEsoQwNUrtf3y3fcWn.jpg',
+        description: 'Gru and his wife Lucy must stop former \'80s child star Balthazar Bratt from achieving world domination.',
+        vote: 6.2,
+        voteCount: 1304,
+        price: 12.4,
+        year: '2017',
+        count: 1,
+        total: 12.4
+      }],
+  total: 27.2,
+  tax: 3.54,
+  currency: '$',
+  grandTotal: 30.74,
+  formProfile:
+    {
+      address:
+        {
+          streetAddress: 'sd',
+          addressLine2: 'df',
+          city: 'sdf',
+          state: 'fds',
+          zip: 'fds',
+          country: 'Austria'
+        },
+      payment: 'Bitcoin'
+    },
+  addressOrder:
+    {
+      streetAddress: 'sd',
+      addressLine2: 'df',
+      city: 'sdf',
+      state: 'fds',
+      zip: 'fds',
+      country: 'Austria'
+    }
+};
