@@ -37,7 +37,7 @@ describe('checking create new order', () => {
         expect(result).to.exist;
         expect(result.isNew).to.equal(true);
         delete result.isNew;
-        for (const key of Object.keys(result)) {
+        for (const key in result) {
           expect(result[key]).to.equal(profile[key]);
         }
       });

@@ -122,26 +122,14 @@ export class HelperForTests extends Dynamo {
   }
 
   public getFakeOrder(): any {
-    const tmpFakeOrder = {};
-    for (let key of Object.keys(this.fakeOrder)) {
-      tmpFakeOrder[key] = this.fakeOrder[key];
-    }
-    return tmpFakeOrder;
+    return Object.assign({}, this.fakeOrder);
   }
 
   public getFakeProfile(): any {
-    const tmpFakeProfile = {};
-    for (let key of Object.keys(this.fakeProfile)) {
-      tmpFakeProfile[key] = this.fakeProfile[key];
-    }
-    return tmpFakeProfile;
+    return Object.assign({}, this.fakeProfile);
   }
 
   public getFakeRewiew(): any {
-    const tmpFakeRewiew = {};
-    for (let key of Object.keys(this.fakeReview)) {
-      tmpFakeRewiew[key] = this.fakeReview[key];
-    }
-    return tmpFakeRewiew;
+    return Object.assign({}, this.fakeReview);
   }
 }

@@ -41,7 +41,6 @@ describe('checking work with reviews', () => {
         body: demoErrorReview
       })
       .expectError((error) => {
-        console.log(error.message);
         expect(error.message).to.equal('[400] One or more parameter values were invalid: An AttributeValue may not contain an empty string');
       })
   });
@@ -74,7 +73,6 @@ describe('checking work with reviews', () => {
         body: HFT.getFakeRewiew()
       })
       .expectError((error) => {
-        console.log(error.message);
         expect(error.message).to.equal('[500] Internal Server Error');
       })
   });

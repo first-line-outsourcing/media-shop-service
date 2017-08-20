@@ -46,7 +46,7 @@ describe('checking add and get profile in db', () => {
         expect(result).to.exist;
         expect(result.isNew).to.equal(true);
         delete result.isNew;
-        for (const key of Object.keys(result)) {
+        for (const key in result) {
           expect(result[key]).to.equal(demoProfile[key]);
         }
       });
@@ -61,7 +61,7 @@ describe('checking add and get profile in db', () => {
       .expectResult((result) => {
         delete result.id;
         expect(result).to.exist;
-        for (const key of Object.keys(result)) {
+        for (const key in result) {
           expect(result[key]).to.equal(demoProfile[key]);
         }
       });
@@ -76,7 +76,7 @@ describe('checking add and get profile in db', () => {
       .expectResult((result) => {
         delete result.id;
         expect(result).to.exist;
-        for (const key of Object.keys(result)) {
+        for (const key in result) {
           expect(result[key]).to.equal(demoProfile[key]);
         }
       });
@@ -121,7 +121,7 @@ describe(`getting all items from db`, () => {
 });
 
 describe(`update profile`, () => {
-  const profile: any = HFT.getFakeProfile();
+  const profile = HFT.getFakeProfile();
   before(beforeTests);
   after(afterTests);
 
@@ -136,7 +136,7 @@ describe(`update profile`, () => {
         expect(result).to.exist;
         expect(result.isNew).to.equal(true);
         delete result.isNew;
-        for (const key of Object.keys(result)) {
+        for (const key in result) {
           expect(result[key]).to.equal(profile[key]);
         }
       });
@@ -160,7 +160,7 @@ describe(`update profile`, () => {
           .event({ principalId: 'vkontakte|95851704' })
           .expectResult((result) => {
             expect(result).to.exist;
-            for (const key of Object.keys(result)) {
+            for (const key in result) {
               expect(result[key]).to.equal(profile[key]);
             }
           });
