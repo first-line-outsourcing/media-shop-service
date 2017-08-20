@@ -9,8 +9,8 @@ export class Nodemailer {
       host: 'smtp.mailgun.org',
       port: 465,
       auth: {
-        user: 'postmaster@support.bestmood.tech',
-        pass: 'e2242ac7e2c433e58ec90ae81559f14b'
+        user: process.env.MAILGUN_USER,
+        pass: process.env.MAILGUN_PASS
       }
     })
   }
