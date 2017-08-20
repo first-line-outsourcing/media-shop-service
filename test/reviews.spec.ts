@@ -17,13 +17,6 @@ function afterTests() {
 }
 
 describe('checking work with reviews', () => {
-  const demoNewReview = {
-    username: 'Test username',
-    rate: 5,
-    createDate: new Date(),
-    productID: 'movies123',
-    text: 'Test text review'
-  };
 
   const demoErrorReview = {
     text: 'Error text'
@@ -35,7 +28,7 @@ describe('checking work with reviews', () => {
   it('when create new review', () => {
     return LT(reviewsFunc.create)
       .event({
-        body: demoNewReview
+        body: HFT.getFakeRewiew()
       })
       .expectResult((result) => {
         expect(result.username).to.equal('Test username');
@@ -56,7 +49,7 @@ describe('checking work with reviews', () => {
   it('when get review', () => {
     return LT(reviewsFunc.getByProductID)
       .event({
-        path: { productID: demoNewReview.productID }
+        path: { productID: HFT.getFakeRewiew().productID }
       })
       .expectResult((result) => {
         expect(result.result[0].text).to.equal('Test text review');
@@ -78,7 +71,7 @@ describe('checking work with reviews', () => {
     delete process.env.IS_OFFLINE;
     return LT(reviewsFunc.create)
       .event({
-        body: demoNewReview
+        body: HFT.getFakeRewiew()
       })
       .expectError((error) => {
         console.log(error.message);
@@ -89,7 +82,7 @@ describe('checking work with reviews', () => {
   it('when get review when server when DB is not offline', () => {
     return LT(reviewsFunc.getByProductID)
       .event({
-        path: { productID: demoNewReview.productID }
+        path: { productID: HFT.getFakeRewiew().productID }
       })
       .expectError((error) => {
         expect(error.message).to.equal('[500] Internal Server Error');

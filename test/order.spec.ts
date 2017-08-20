@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import * as LT from 'lambda-tester';
-import { HelperForTests, fakeOrder } from './helper';
+import { HelperForTests } from './helper';
 import * as orderHandler from '../api/order/handler';
 import * as profileHandler from '../api/profile/handler';
 
@@ -23,16 +23,8 @@ describe('checking create new order', () => {
 
   before(beforeTests);
   after(afterTests);
-  const tmpFakeOrder: any = fakeOrder;
-  const profile: any = {
-    firstName: 'Semyon',
-    lastName: 'Ermolenko',
-    social: 'vkontakte',
-    nickName: 'sem.ermolenko',
-    socialId: '95851704',
-    currency: '$',
-    picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4',
-  };
+  const tmpFakeOrder: any = HFT.getFakeOrder();
+  const profile = HFT.getFakeProfile();
 
   it('create profile before update', () => {
     return LT(profileHandler.findOrCreate)
@@ -54,7 +46,7 @@ describe('checking create new order', () => {
   it('when create order by user', () => {
     return LT(orderHandler.createOrder)
       .event({
-        body: fakeOrder,
+        body: HFT.getFakeOrder(),
         principalId: 'vkontakte|95851704'
       })
       .expectResult((result) => {
@@ -66,7 +58,7 @@ describe('checking create new order', () => {
   it('when create order by user but user not found', () => {
     return LT(orderHandler.createOrder)
       .event({
-        body: fakeOrder,
+        body: HFT.getFakeOrder(),
         principalId: 'vkontakte'
       })
       .expectError();

@@ -18,29 +18,15 @@ function afterTests() {
 
 describe('checking add and get profile in db', () => {
 
-  const demoProfile = {
-    firstName: 'Semyon',
-    lastName: 'Ermolenko',
-    social: 'vkontakte',
-    nickName: 'sem.ermolenko',
-    socialId: '95851704',
-    currency: '$',
-    picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4',
-  };
+  const demoProfile = HFT.getFakeProfile();
 
   before(beforeTests);
   after(afterTests);
 
   it('when create profile with empty field', () => {
-    const tmp = {
-      firstName: 'Semyon',
-      lastName: 'Ermolenko',
-      social: 'vkontakte',
-      nickName: 'sem.ermolenko',
-      socialId: '95851704',
-      currency: '',
-      picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4',
-    };
+    const tmp = HFT.getFakeProfile();
+    tmp.currency = '';
+
     return LT(profileFunc.findOrCreate)
       .event({
         principalId: 'vkontakte|95851704',
@@ -135,15 +121,7 @@ describe(`getting all items from db`, () => {
 });
 
 describe(`update profile`, () => {
-  const profile: any = {
-    firstName: 'Semyon',
-    lastName: 'Ermolenko',
-    social: 'vkontakte',
-    nickName: 'sem.ermolenko',
-    socialId: '95851704',
-    currency: '$',
-    picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4',
-  };
+  const profile: any = HFT.getFakeProfile();
   before(beforeTests);
   after(afterTests);
 
