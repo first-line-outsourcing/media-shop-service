@@ -71,19 +71,20 @@ export async function ordersTrigger(event, context, callback) {
   order.createdBy = await profileManager.getById(order.createdBy);
 
   if (!order.createdBy['email']) {
-    callback(null, null);
+    return callback(null, null);
   }
+  console.log('i`m here');
 
   const manager = new InvoiceManager();
   order = InvoiceManager.reformatOrderProducts(order);
 
   try {
     await manager.printOrder(order, context.awsRequestId);
-    await removeFilePromise(InvoiceManager.getFileLocation(order.id));
     callback(null, { id: order.id });
   } catch (err) {
-    await removeFilePromise(InvoiceManager.getFileLocation(order.id));
     errorHandler(callback)(err);
+  } finally {
+    await removeFilePromise(InvoiceManager.getFileLocation(order.id));
   }
 
   const nodemailer = new Nodemailer();
