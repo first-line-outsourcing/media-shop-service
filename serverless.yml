@@ -1,4 +1,4 @@
-service: bmt-media-shop-service-mailer
+service: bmt-media-shop-service
 
 provider:
   name: aws

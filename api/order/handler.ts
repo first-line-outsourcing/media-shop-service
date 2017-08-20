@@ -73,7 +73,6 @@ export async function ordersTrigger(event, context, callback) {
   if (!order.createdBy['email']) {
     return callback(null, null);
   }
-  console.log('i`m here');
 
   const manager = new InvoiceManager();
   order = InvoiceManager.reformatOrderProducts(order);
