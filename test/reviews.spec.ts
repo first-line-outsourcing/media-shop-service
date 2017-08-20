@@ -28,7 +28,7 @@ describe('checking work with reviews', () => {
   it('when create new review', () => {
     return LT(reviewsFunc.create)
       .event({
-        body: HFT.getFakeRewiew()
+        body: HFT.getFakeReview()
       })
       .expectResult((result) => {
         expect(result.username).to.equal('Test username');
@@ -48,7 +48,7 @@ describe('checking work with reviews', () => {
   it('when get review', () => {
     return LT(reviewsFunc.getByProductID)
       .event({
-        path: { productID: HFT.getFakeRewiew().productID }
+        path: { productID: HFT.getFakeReview().productID }
       })
       .expectResult((result) => {
         expect(result.result[0].text).to.equal('Test text review');
@@ -70,7 +70,7 @@ describe('checking work with reviews', () => {
     delete process.env.IS_OFFLINE;
     return LT(reviewsFunc.create)
       .event({
-        body: HFT.getFakeRewiew()
+        body: HFT.getFakeReview()
       })
       .expectError((error) => {
         expect(error.message).to.equal('[500] Internal Server Error');
@@ -80,7 +80,7 @@ describe('checking work with reviews', () => {
   it('when get review when server when DB is not offline', () => {
     return LT(reviewsFunc.getByProductID)
       .event({
-        path: { productID: HFT.getFakeRewiew().productID }
+        path: { productID: HFT.getFakeReview().productID }
       })
       .expectError((error) => {
         expect(error.message).to.equal('[500] Internal Server Error');
