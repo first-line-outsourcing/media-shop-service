@@ -17,13 +17,6 @@ function afterTests() {
 }
 
 describe('checking work with reviews', () => {
-  const demoNewReview = {
-    username: 'Test username',
-    rate: 5,
-    createDate: new Date(),
-    productID: 'movies123',
-    text: 'Test text review'
-  };
 
   const demoErrorReview = {
     text: 'Error text'
@@ -35,7 +28,7 @@ describe('checking work with reviews', () => {
   it('when create new review', () => {
     return LT(reviewsFunc.create)
       .event({
-        body: demoNewReview
+        body: HFT.getFakeReview()
       })
       .expectResult((result) => {
         expect(result.username).to.equal('Test username');
@@ -48,7 +41,6 @@ describe('checking work with reviews', () => {
         body: demoErrorReview
       })
       .expectError((error) => {
-        console.log(error.message);
         expect(error.message).to.equal('[400] One or more parameter values were invalid: An AttributeValue may not contain an empty string');
       })
   });
@@ -56,7 +48,7 @@ describe('checking work with reviews', () => {
   it('when get review', () => {
     return LT(reviewsFunc.getByProductID)
       .event({
-        path: { productID: demoNewReview.productID }
+        path: { productID: HFT.getFakeReview().productID }
       })
       .expectResult((result) => {
         expect(result.result[0].text).to.equal('Test text review');
@@ -78,10 +70,9 @@ describe('checking work with reviews', () => {
     delete process.env.IS_OFFLINE;
     return LT(reviewsFunc.create)
       .event({
-        body: demoNewReview
+        body: HFT.getFakeReview()
       })
       .expectError((error) => {
-        console.log(error.message);
         expect(error.message).to.equal('[500] Internal Server Error');
       })
   });
@@ -89,7 +80,7 @@ describe('checking work with reviews', () => {
   it('when get review when server when DB is not offline', () => {
     return LT(reviewsFunc.getByProductID)
       .event({
-        path: { productID: demoNewReview.productID }
+        path: { productID: HFT.getFakeReview().productID }
       })
       .expectError((error) => {
         expect(error.message).to.equal('[500] Internal Server Error');

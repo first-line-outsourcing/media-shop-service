@@ -18,29 +18,15 @@ function afterTests() {
 
 describe('checking add and get profile in db', () => {
 
-  const demoProfile = {
-    firstName: 'Semyon',
-    lastName: 'Ermolenko',
-    social: 'vkontakte',
-    nickName: 'sem.ermolenko',
-    socialId: '95851704',
-    currency: '$',
-    picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4',
-  };
+  const demoProfile = HFT.getFakeProfile();
 
   before(beforeTests);
   after(afterTests);
 
   it('when create profile with empty field', () => {
-    const tmp = {
-      firstName: 'Semyon',
-      lastName: 'Ermolenko',
-      social: 'vkontakte',
-      nickName: 'sem.ermolenko',
-      socialId: '95851704',
-      currency: '',
-      picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4',
-    };
+    const tmp = HFT.getFakeProfile();
+    tmp.currency = '';
+
     return LT(profileFunc.findOrCreate)
       .event({
         principalId: 'vkontakte|95851704',
@@ -60,7 +46,7 @@ describe('checking add and get profile in db', () => {
         expect(result).to.exist;
         expect(result.isNew).to.equal(true);
         delete result.isNew;
-        for (const key of Object.keys(result)) {
+        for (const key in result) {
           expect(result[key]).to.equal(demoProfile[key]);
         }
       });
@@ -75,7 +61,7 @@ describe('checking add and get profile in db', () => {
       .expectResult((result) => {
         delete result.id;
         expect(result).to.exist;
-        for (const key of Object.keys(result)) {
+        for (const key in result) {
           expect(result[key]).to.equal(demoProfile[key]);
         }
       });
@@ -90,7 +76,7 @@ describe('checking add and get profile in db', () => {
       .expectResult((result) => {
         delete result.id;
         expect(result).to.exist;
-        for (const key of Object.keys(result)) {
+        for (const key in result) {
           expect(result[key]).to.equal(demoProfile[key]);
         }
       });
@@ -135,15 +121,7 @@ describe(`getting all items from db`, () => {
 });
 
 describe(`update profile`, () => {
-  const profile: any = {
-    firstName: 'Semyon',
-    lastName: 'Ermolenko',
-    social: 'vkontakte',
-    nickName: 'sem.ermolenko',
-    socialId: '95851704',
-    currency: '$',
-    picture: 'https://avatars2.githubusercontent.com/u/26054782?v=4',
-  };
+  const profile = HFT.getFakeProfile();
   before(beforeTests);
   after(afterTests);
 
@@ -158,7 +136,7 @@ describe(`update profile`, () => {
         expect(result).to.exist;
         expect(result.isNew).to.equal(true);
         delete result.isNew;
-        for (const key of Object.keys(result)) {
+        for (const key in result) {
           expect(result[key]).to.equal(profile[key]);
         }
       });
@@ -182,7 +160,7 @@ describe(`update profile`, () => {
           .event({ principalId: 'vkontakte|95851704' })
           .expectResult((result) => {
             expect(result).to.exist;
-            for (const key of Object.keys(result)) {
+            for (const key in result) {
               expect(result[key]).to.equal(profile[key]);
             }
           });
