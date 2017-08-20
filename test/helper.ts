@@ -129,7 +129,7 @@ export class HelperForTests extends Dynamo {
     return Object.assign({}, this.fakeProfile);
   }
 
-  public getFakeRewiew(): any {
+  public getFakeReview(): any {
     return Object.assign({}, this.fakeReview);
   }
 }
