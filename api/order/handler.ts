@@ -75,21 +75,29 @@ export async function ordersTrigger(event, context, callback) {
   }
 
   const manager = new InvoiceManager();
-  order = InvoiceManager.reformatOrderProducts(order);
-
   try {
-    await manager.printOrder(order, context.awsRequestId);
-    callback(null, { id: order.id });
-  } catch (err) {
-    errorHandler(callback)(err);
-  } finally {
-    await removeFilePromise(InvoiceManager.getFileLocation(order.id));
-  }
+    await manager.exists(order.id);
+  } catch (e) {
+    order.products.forEach(product => {
+      product.description = product.description.substr(0, 130).replace(/([\uD800-\uDFFF].)|\n|([^\x00-\x7F])/g, ''),
+        product.name = product.name.replace(/([\uD800-\uDFFF].)|([^\x00-\x7F])/g, '');
+    });
 
-  const nodemailer = new Nodemailer();
-  nodemailer.sendMailInvoiceLink(order.createdBy['email'], order.id)
-    .then((data) => callback(null, data))
-    .catch(errorHandler(callback))
+    try {
+      await manager.printOrder(order, context.awsRequestId);
+      callback(null, { id: order.id });
+    } catch (err) {
+      errorHandler(callback)(err);
+    } finally {
+      await removeFilePromise(InvoiceManager.getFileLocation(order.id));
+    }
+
+  } finally {
+    const nodemailer = new Nodemailer();
+    nodemailer.sendMailInvoiceLink(order.createdBy['email'], order.id)
+      .then((data) => callback(null, data))
+      .catch(errorHandler(callback))
+  }
 
 }
 
