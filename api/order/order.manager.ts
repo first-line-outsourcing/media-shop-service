@@ -43,8 +43,8 @@ export class OrderManager extends Dynamo {
         orders.forEach((order: Order) => {
           let profile = profiles.find((profile) => profile.id === order.createdBy);
           if (profile) {
-            order.formProfile.firstName = profile.firstName;
-            order.formProfile.lastName = profile.lastName;
+            order.firstName = profile.firstName;
+            order.lastName = profile.lastName;
           }
         });
         return orders;
@@ -80,35 +80,33 @@ export class OrderManager extends Dynamo {
     let formedOrders: any[] = [];
 
     for (let i = 0; i < count; i++) {
-      formedOrders.push(new Order({
+      const fakeOrder = new Order({
         products: OrderManager.fakeProducts(),
-        total: OrderManager.randomNumber(1000),
-        formProfile: {
-          promoCode: PromocodeManager.generatePromocode(5),
-          address: OrderManager.fakeAddress(),
-          payment: OrderManager.randomKeyPayment(),
-          firstName: faker.name.firstName(),
-          lastName: faker.name.lastName(),
-        },
+        total: OrderManager.randomNumber(100, 1000),
+        promocode: PromocodeManager.generatePromocode(5),
+        payment: OrderManager.randomKeyPayment(),
         addressOrder: OrderManager.fakeAddress(),
-        createdAt: new Date(faker.date.between(from || '2017-01-01T20:57:36.159Z', to || '2017-06-01T20:57:36.159Z')),
-      }));
+        createdAt: new Date(faker.date.between(from || '2014-01-01', to || '2017-06-01')),
+      });
+      fakeOrder.firstName = faker.name.firstName();
+      fakeOrder.lastName = faker.name.lastName();
+      formedOrders.push(fakeOrder);
     }
     return Promise.resolve(formedOrders);
   }
 
-  static randomNumber(max): number {
-    return Math.floor(Math.random() * (max + 1));
+  static randomNumber(min, max): number {
+    return Math.floor(Math.random() * (max + 1) + min);
   }
 
   static randomKeyType(): string {
     let type = ['music', 'game', 'movie'];
-    return type[OrderManager.randomNumber(type.length - 1)];
+    return type[OrderManager.randomNumber(0, type.length - 1)];
   }
 
   static randomKeyPayment(): string {
     let payment = ['PayPal', 'CreditCard', 'Cash', 'WebMoney', 'QIWI', 'Bitcoin'];
-    return payment[OrderManager.randomNumber(payment.length - 1)];
+    return payment[OrderManager.randomNumber(0, payment.length - 1)];
   }
 
   static fakeAddress(): any {
@@ -124,7 +122,7 @@ export class OrderManager extends Dynamo {
 
   static fakeProducts(): any[] {
     let products: any[] = [];
-    let lastIndex = 2 + OrderManager.randomNumber(10);
+    let lastIndex = 2 + OrderManager.randomNumber(0, 10);
 
     for (let i = 0; i < lastIndex; i++) {
       products.push({
@@ -133,7 +131,7 @@ export class OrderManager extends Dynamo {
         name: faker.lorem.words(),
         cover: faker.image.imageUrl(),
         description: faker.lorem.paragraph(),
-        price: OrderManager.randomNumber(100),
+        price: OrderManager.randomNumber(10, 100),
       });
     }
     return products;

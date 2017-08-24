@@ -1,6 +1,6 @@
 import { errorHandler, log } from '../helper';
 import { ProfileManager } from './profile.manager';
-import { Profile } from './profiler.model';
+import { Profile } from './profile.model';
 
 export function getAll(event, context, callback) {
   const manager = new ProfileManager();
