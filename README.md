@@ -1,5 +1,5 @@
 # media-shop-service
-Serverless API for Media shop
+Serverless API for Media shop https://github.com/BestMood-Tech/media-shop
 
 [![CircleCI](https://circleci.com/gh/BestMood-Tech/media-shop-service.svg?style=svg)](https://circleci.com/gh/BestMood-Tech/media-shop-service)
 
