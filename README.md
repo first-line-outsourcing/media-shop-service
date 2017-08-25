@@ -1,3 +1,5 @@
+<img src="https://github.com/BestMood-Tech/media-shop/blob/master/src/assets/BMT.png" alt="alt text" width="25%">
+
 # media-shop-service
 Serverless API for Media shop https://github.com/BestMood-Tech/media-shop
 
@@ -27,3 +29,4 @@ AUTH0_CLIENT_SECRET = AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 - **ramlhtml**: generate html docs from raml source
 - **documentation**: generate docs. *raml* + *ramlhtml*
 - **deploy**: deploy to AWS + generate docs + sync docs folder with S3 docs bucket
+
