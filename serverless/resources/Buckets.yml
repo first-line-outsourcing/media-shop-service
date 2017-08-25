@@ -12,6 +12,6 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: ${self:provider.environment.DOCUMENTATION_BUCKET}
-      AccessControl: PublicReadWrite
+      AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html

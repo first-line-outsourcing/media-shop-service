@@ -55,6 +55,8 @@ custom:
   s3Sync:
     - bucketName: ${self:provider.environment.DOCUMENTATION_BUCKET}
       localDir: documentation
+    - bucketName: ${self:provider.environment.BUCKET}
+      localDir: templates
   remover:
      buckets:
        - ${self:provider.environment.BUCKET}
