@@ -6,7 +6,7 @@ Serverless API for Media shop https://github.com/BestMood-Tech/media-shop
 [![CircleCI](https://circleci.com/gh/BestMood-Tech/media-shop-service.svg?style=svg)](https://circleci.com/gh/BestMood-Tech/media-shop-service)
 
 # API Docs
-https://s3.eu-central-1.amazonaws.com/bmt-media-shop-service-docs/index.html
+https://api.media-shop.bestmood.tech
 
 # Do not forget
 
