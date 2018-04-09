@@ -6,6 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const destPath = path.join(__dirname, '.webpack');
 
 module.exports = {
+  mode: 'development',
   entry: slsw.lib.entries,
   output: {
     libraryTarget: 'commonjs',
@@ -14,7 +15,7 @@ module.exports = {
   },
   target: 'node',
   module: {
-    loaders: [
+    rules: [
       { test: /\.ts(x?)$/, loader: 'ts-loader', exclude: [/\.(spec|e2e)\.ts$/] }
     ]
   },
@@ -28,7 +29,7 @@ module.exports = {
       }
     ]),
     new WebpackShellPlugin({
-      onBuildEnd: [`chmod 755 ${destPath}/wkhtmltopdf`]
+      onBuildEnd: [`chmod 755 ${destPath}/service/wkhtmltopdf`]
     })
   ]
 };
