@@ -1,8 +1,8 @@
-import { S3 } from 'aws-sdk';
+import { Endpoint, S3 } from 'aws-sdk';
 import { createWriteStream } from 'fs';
 import { render } from 'mustache';
 import * as wkhtmltopdf from 'wkhtmltopdf';
-import { Dynamo, readFilePromise } from '../helper';
+import { Dynamo, readFilePromise, log } from '../helper';
 import { Order } from '../order/order.model';
 
 wkhtmltopdf.command = './wkhtmltopdf';
@@ -12,7 +12,11 @@ export class InvoiceManager extends Dynamo {
 
   constructor() {
     super();
-    this.s3 = new S3();
+    const config = process.env.IS_OFFLINE ? {
+        s3ForcePathStyle: true,
+        endpoint: new Endpoint('http://localhost:8800'),
+      } as any : {};
+    this.s3 = new S3(config);
   }
 
   public printOrder(order: Order, awsRequestId): Promise<any> {
@@ -27,7 +31,8 @@ export class InvoiceManager extends Dynamo {
     return this.s3.getObject({
       Bucket: process.env.BUCKET as string,
       Key: templateName,
-    }).promise().then(data => (data.Body as Buffer).toString('utf8'));
+    }).promise().then(data => (data.Body as Buffer).toString('utf8'))
+      .catch(e => console.log('============', e));
   }
 
   private putInvoiceToS3(id, data, awsRequestId): Promise<any> {
@@ -75,7 +80,7 @@ export class InvoiceManager extends Dynamo {
   }
 
   static getFileLocation(id): string {
-    return `/tmp/rendered-${id}.pdf`;
+    return process.env.NODE_ENV === 'development' ? `./.tmp/rendered-${id}.pdf`: `/tmp/rendered-${id}.pdf`;
   }
 
   static reformatOrderProducts(order: Order) {

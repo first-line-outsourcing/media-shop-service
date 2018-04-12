@@ -9,12 +9,13 @@ export function createOrder(event, context, callback) {
   const data = event.body;
   const [social, id] = event.principalId.split('|');
 
-  log('Create Order. Incoming data: ', data);
+  log('Create Order. Incoming data: ', data, social, id);
 
   const manager = new OrderManager();
   const profileManager = new ProfileManager();
   profileManager.getByToken(id, social)
     .then(profile => {
+      console.dir(profile);
       data.createdAt = (new Date()).toISOString();
       data.createdBy = profile.id;
       return manager.create(data);

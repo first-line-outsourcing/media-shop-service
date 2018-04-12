@@ -10,7 +10,6 @@ export async function print(event, context, callback) {
   log('Print Invoice. Incoming data: \n', 'orderId: ', orderId);
 
   const manager = new InvoiceManager();
-
   try {
     await manager.exists(orderId);
     return callback(null, {id: orderId});

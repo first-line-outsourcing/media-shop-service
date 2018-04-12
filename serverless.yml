@@ -47,10 +47,11 @@ custom:
     start:
       port: 8000
       inMemory: true
+#      dbPath: ./.tmp/
       migrate: true
   s3:
     port: 8800
-    directory: /tmp
+    directory: ./.tmp
   s3Sync:
     - bucketName: ${self:provider.environment.DOCUMENTATION_BUCKET}
       localDir: documentation

@@ -9,17 +9,20 @@ export function getAll(event, context, callback) {
     .catch(errorHandler(callback));
 }
 
-export function findOrCreate(event, context, callback) {
+export async function findOrCreate(event, context, callback) {
   const [social, id] = event.principalId.split('|');
   const user = event.body;
-
+  console.dir(user);
   log('FindOrCreate Profile. Incoming data: ', '\n social: ', social, ' id: ', id, '\n body: ', user);
 
   const manager = new ProfileManager();
-
-  manager.findOrCreate(id, social, user)
-    .then((data: Profile | any) => callback(null, data))
-    .catch(errorHandler(callback));
+  try {
+    const profile = await manager.findOrCreate(id, social, user);
+    console.dir(profile);
+    callback(null, profile);
+  } catch (e) {
+    errorHandler(callback)(e);
+  }
 }
 
 export function update(event, context, callback) {
