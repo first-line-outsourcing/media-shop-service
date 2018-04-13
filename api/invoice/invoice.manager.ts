@@ -1,8 +1,8 @@
-import { Endpoint, S3 } from 'aws-sdk';
+import { S3 } from 'aws-sdk';
 import { createWriteStream } from 'fs';
 import { render } from 'mustache';
 import * as wkhtmltopdf from 'wkhtmltopdf';
-import { Dynamo, readFilePromise, log } from '../helper';
+import { Dynamo, readFilePromise } from '../helper';
 import { Order } from '../order/order.model';
 
 wkhtmltopdf.command = './wkhtmltopdf';
@@ -12,11 +12,8 @@ export class InvoiceManager extends Dynamo {
 
   constructor() {
     super();
-    const config = process.env.NODE_ENV ? {
-        s3ForcePathStyle: true,
-        endpoint: new Endpoint('http://localhost:8800'),
-      } as any : {};
-    this.s3 = new S3(config);
+    this.s3 = new S3();
+    console.dir(this.s3)
   }
 
   public printOrder(order: Order, awsRequestId): Promise<any> {
@@ -80,7 +77,8 @@ export class InvoiceManager extends Dynamo {
   }
 
   static getFileLocation(id): string {
-    return process.env.NODE_ENV === 'development' ? `./.tmp/rendered-${id}.pdf`: `/tmp/rendered-${id}.pdf`;
+    // return process.env.NODE_ENV === 'development' ? `./.tmp/rendered-${id}.pdf`: `/tmp/rendered-${id}.pdf`;
+    return `/tmp/rendered-${id}.pdf`;
   }
 
   static reformatOrderProducts(order: Order) {
