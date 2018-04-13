@@ -6,7 +6,7 @@
   "scripts": {
     "start": "sls deploy",
     "test": "nyc --check-coverage mocha test/*.spec.ts",
-    "serverless-offline": "sls offline start",
+    "serverless-offline": "NODE_ENV=development sls offline start",
     "raml": "sls raml > documentation/docs.raml",
     "ramlhtml": "raml2html documentation/docs.raml > documentation/index.html --theme 'raml2html-slate-theme'",
     "documentation": "npm run raml && npm run ramlhtml",

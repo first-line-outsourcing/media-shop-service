@@ -12,7 +12,7 @@ export class InvoiceManager extends Dynamo {
 
   constructor() {
     super();
-    const config = process.env.IS_OFFLINE ? {
+    const config = process.env.NODE_ENV ? {
         s3ForcePathStyle: true,
         endpoint: new Endpoint('http://localhost:8800'),
       } as any : {};
